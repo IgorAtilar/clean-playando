@@ -33,6 +33,7 @@
     "no-useless-constructor": "off",
     "no-shadow": "off",
     "no-empty-function": "off",
-    "max-classes-per-file": "off"
+    "max-classes-per-file": "off",
+    "class-methods-use-this": "off"
   }
 }

@@ -19,6 +19,6 @@ export class RemoteSearchVideo implements SearchVideo {
       throw new UnexpectedError();
     }
 
-    return httpResponse.body;
+    return httpResponse.data;
   }
 }

@@ -4,5 +4,6 @@ export enum HttpStatusCode {
 
 export type HttpResponse<T> = {
   statusCode: HttpStatusCode;
-  body?: T;
+  data?: T;
+  errorMessage?: string;
 };

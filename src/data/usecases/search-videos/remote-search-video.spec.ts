@@ -4,7 +4,7 @@ import { HttpGetClientSpy } from '@/data/test/mock-http';
 import { UnexpectedError } from '@/domain/errors/unexpected-error';
 import { RemoteSearchVideo } from './remote-search-video';
 
-describe('RemoteSearchVideo', () => {
+describe('Data: RemoteSearchVideo', () => {
   it('should call HttpGetClient with correct url', async () => {
     const url = 'any_url';
     const httpGetClientSpy = new HttpGetClientSpy<SearchVideosParams, VideoListModel>();
@@ -54,7 +54,7 @@ describe('RemoteSearchVideo', () => {
 
     httpGetClientSpy.response = {
       statusCode: 200,
-      body: mockResponse
+      data: mockResponse
     };
     const remoteSearchVideo = new RemoteSearchVideo(url, httpGetClientSpy);
 
