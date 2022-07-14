@@ -10,11 +10,11 @@ export default createGlobalStyle`
 
   body {
     font-family: 'Roboto', sans-serif;
-    font-weight:${({ theme }) => theme.fonts.regular};
+    font-weight: ${({ theme }) => theme.fonts.regular};
     font-size: 0.875rem;
     line-height: 1;
-    background: ${({ theme }) => theme.colors.background};
-    color: ${({ theme }) => theme.colors.text};
+    background: ${({ theme }) => theme.colors.gray800};
+    color: ${({ theme }) => theme.colors.gray100};
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;

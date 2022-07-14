@@ -1,10 +1,13 @@
 export const theme = {
   colors: {
     primary: '#805AD5',
-    secondary: '#553C9A',
-    background: '#1A202C',
-    light: '##F7FAFC',
-    text: '#E2E8F0'
+    white: '#FFFFFF',
+    gray900: '#171923',
+    gray800: '#1A202C',
+    gray700: '#2D3748',
+    gray500: '#718096',
+    gray400: '#A0AEC0',
+    gray100: '#EDF2F7'
   },
   fonts: {
     regular: '400',
