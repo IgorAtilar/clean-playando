@@ -1,12 +1,6 @@
-import React, {
-  FormEvent,
-  FormEventHandler,
-  FormHTMLAttributes,
-  KeyboardEventHandler,
-  useRef
-} from 'react';
-import { Button } from '../Button';
-import { Input } from '../Input';
+import React, { FormEvent, FormHTMLAttributes } from 'react';
+import { Button, Input } from '@/presentation/components';
+
 import { Form } from './styles';
 
 export type SearchBarType = 'add' | 'search';
@@ -44,6 +38,7 @@ export function SearchBar({
 
   const handleEnterPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== 'Enter') return;
+    e.preventDefault();
     const { value } = e.target;
     onSubmit(value);
   };

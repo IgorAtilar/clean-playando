@@ -20,7 +20,7 @@ export const mockFailureHttpResponse = () => ({
 export const mockGetRequest = (): HttpGetParams<any> => ({
   url: faker.internet.url(),
   params: {
-    query: faker.datatype.string(),
+    q: faker.datatype.string(),
     maxResults: faker.datatype.number()
   }
 });

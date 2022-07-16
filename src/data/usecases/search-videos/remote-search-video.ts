@@ -1,24 +1,41 @@
 import { HttpGetClient } from '@/data/protocols/http/http-get-client';
 import { UnexpectedError } from '@/domain/errors/unexpected-error';
-import { VideoListModel } from '@/domain/models/video-list-model';
-import { SearchVideo, SearchVideosParams } from '@/domain/usecases/search-videos';
+import { Video, VideoResponse } from '@/domain/models/video-model';
+import {
+  SearchVideos,
+  SearchVideosParams,
+  SearchVideosResponse
+} from '@/domain/usecases/search-videos';
 
-export class RemoteSearchVideo implements SearchVideo {
+export type GetSearchVideosResponse = {
+  items: VideoResponse[];
+};
+
+export class RemoteSearchVideo implements SearchVideos {
   constructor(
     private readonly url: string,
-    private readonly httpGetClient: HttpGetClient<SearchVideosParams, VideoListModel>
+    private readonly httpGetClient: HttpGetClient<SearchVideosParams, GetSearchVideosResponse>
   ) {}
 
-  async search(params: SearchVideosParams): Promise<VideoListModel> {
-    const httpResponse = await this.httpGetClient.get({
+  async search(params: SearchVideosParams): Promise<SearchVideosResponse> {
+    const { statusCode, data } = await this.httpGetClient.get({
       url: this.url,
       params
     });
 
-    if (httpResponse.statusCode !== 200) {
+    if (statusCode !== 200) {
       throw new UnexpectedError();
     }
 
-    return httpResponse.data;
+    if (!data?.items) return { videos: [] };
+
+    const videos: Video[] = data.items.map((item) => ({
+      id: item.id.videoId,
+      title: item.snippet.title,
+      channelTitle: item.snippet.channelTitle,
+      thumbnails: item.snippet.thumbnails
+    }));
+
+    return { videos };
   }
 }

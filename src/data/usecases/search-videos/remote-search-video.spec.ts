@@ -1,26 +1,26 @@
-import { VideoListModel } from '@/domain/models/video-list-model';
 import { SearchVideosParams } from '@/domain/usecases/search-videos';
 import { HttpGetClientSpy } from '@/data/test/mock-http';
 import { UnexpectedError } from '@/domain/errors/unexpected-error';
-import { RemoteSearchVideo } from './remote-search-video';
+import { RemoteSearchVideo, GetSearchVideosResponse } from './remote-search-video';
+import { mockGetResponse, mockResponse } from '@/data/test/mock-remote-search-video';
 
 describe('Data: RemoteSearchVideo', () => {
   it('should call HttpGetClient with correct url', async () => {
     const url = 'any_url';
-    const httpGetClientSpy = new HttpGetClientSpy<SearchVideosParams, VideoListModel>();
+    const httpGetClientSpy = new HttpGetClientSpy<SearchVideosParams, GetSearchVideosResponse>();
     const remoteSearchVideo = new RemoteSearchVideo(url, httpGetClientSpy);
-    await remoteSearchVideo.search({ query: 'any_search' });
+    await remoteSearchVideo.search({ q: 'any_search' });
     expect(httpGetClientSpy.url).toBe(url);
   });
 
   it('should call HttpGetClient with correct params', async () => {
     const url = 'any_url';
     const params = {
-      query: 'any_query',
+      q: 'any_query',
       maxResults: 5
     };
 
-    const httpGetClientSpy = new HttpGetClientSpy<SearchVideosParams, VideoListModel>();
+    const httpGetClientSpy = new HttpGetClientSpy<SearchVideosParams, GetSearchVideosResponse>();
     const remoteSearchVideo = new RemoteSearchVideo(url, httpGetClientSpy);
     await remoteSearchVideo.search(params);
 
@@ -29,37 +29,30 @@ describe('Data: RemoteSearchVideo', () => {
 
   it('should throw UnexpectedError if HttpGetClient returns status code different of 200', async () => {
     const url = 'any_url';
-    const httpGetClientSpy = new HttpGetClientSpy<SearchVideosParams, VideoListModel>();
+    const httpGetClientSpy = new HttpGetClientSpy<SearchVideosParams, GetSearchVideosResponse>();
     httpGetClientSpy.response = {
       statusCode: 400
     };
     const remoteSearchVideo = new RemoteSearchVideo(url, httpGetClientSpy);
     const errorPromise = remoteSearchVideo.search({
-      query: 'any_search'
+      q: 'any_search'
     });
     await expect(errorPromise).rejects.toThrow(new UnexpectedError());
   });
 
-  it('should return VideoModel if HttpGetClient return status code 200', async () => {
+  it('should return Videos if HttpGetClient return status code 200', async () => {
     const url = 'any_url';
-    const httpGetClientSpy = new HttpGetClientSpy<SearchVideosParams, VideoListModel>();
-    const mockResponse = {
-      videos: [
-        {
-          id: '01',
-          title: 'title'
-        }
-      ]
-    };
+    const httpGetClientSpy = new HttpGetClientSpy<SearchVideosParams, GetSearchVideosResponse>();
+    const getResponse = mockGetResponse();
 
     httpGetClientSpy.response = {
       statusCode: 200,
-      data: mockResponse
+      data: getResponse
     };
     const remoteSearchVideo = new RemoteSearchVideo(url, httpGetClientSpy);
 
-    const response = await remoteSearchVideo.search({ query: 'any_search' });
+    const response = await remoteSearchVideo.search({ q: 'any_search' });
 
-    expect(response).toBe(mockResponse);
+    expect(response).toStrictEqual(mockResponse(getResponse));
   });
 });

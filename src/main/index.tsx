@@ -1,12 +1,5 @@
 import ReactDOM from 'react-dom';
-import { ThemeProvider } from 'styled-components';
-import { Home } from '@/presentation/pages/home';
-import { theme, GlobalStyles } from '@/presentation/styles';
+import { App } from '@/presentation/app';
+import { MakeHome } from './factories/pages/home/home-factory';
 
-ReactDOM.render(
-  <ThemeProvider theme={theme}>
-    <Home />
-    <GlobalStyles />
-  </ThemeProvider>,
-  document.getElementById('root')
-);
+ReactDOM.render(<App makeHome={MakeHome} />, document.getElementById('root'));

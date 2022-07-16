@@ -1,10 +1,14 @@
-import { VideoListModel } from '@/domain/models/video-list-model';
+import { Video } from '../models/video-model';
 
 export type SearchVideosParams = {
-  query: string;
+  q: string;
   maxResults?: number;
 };
 
-export interface SearchVideo {
-  search(params: SearchVideosParams): Promise<VideoListModel>;
+export type SearchVideosResponse = {
+  videos: Video[];
+};
+
+export interface SearchVideos {
+  search(params: SearchVideosParams): Promise<SearchVideosResponse>;
 }

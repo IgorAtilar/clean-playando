@@ -6,7 +6,7 @@ import { mockAxios, MockedAxios } from '../test';
 jest.mock('axios');
 
 type SutTypes = {
-  sut: AxiosHttpClient<any, any>;
+  sut: AxiosHttpClient;
   mockedAxios: MockedAxios;
 };
 
@@ -26,7 +26,11 @@ describe('Infra: AxiosHttpClient', () => {
     const request = mockGetRequest();
     const { sut, mockedAxios } = makeSut();
     await sut.get(request);
-    expect(mockedAxios.get).toHaveBeenCalledWith(request.url, request.params);
+
+    const params = {
+      ...request.params
+    };
+    expect(mockedAxios.get).toHaveBeenCalledWith(request.url, { params });
   });
 
   it('should return the correct statusCode and data', () => {

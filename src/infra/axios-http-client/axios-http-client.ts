@@ -1,16 +1,25 @@
 import axios, { AxiosError } from 'axios';
 import { HttpGetClient, HttpGetParams, HttpResponse } from '@/data/protocols/http';
 
-export class AxiosHttpClient<T, R> implements HttpGetClient<T, R> {
-  async get({ url, params }: HttpGetParams<T>): Promise<HttpResponse<R>> {
+export class AxiosHttpClient implements HttpGetClient<any, any> {
+  constructor(private readonly key?: string, private readonly defaultParams?: any) {}
+
+  async get({ url, params }: HttpGetParams<any>): Promise<HttpResponse<any>> {
     let errorMessage: string;
-    let data: R;
+    let data: any;
     let status: number;
 
     try {
-      const httpResponse = await axios.get<R>(url, params);
-      data = httpResponse.data;
-      status = httpResponse.status;
+      const { data: httpResponseData, status: httpResponseStatus } = await axios.get<any>(url, {
+        params: {
+          ...params,
+          ...this.defaultParams,
+          ...(this.key && { key: this.key })
+        }
+      });
+
+      data = httpResponseData;
+      status = httpResponseStatus;
     } catch (error: any) {
       if (error instanceof AxiosError) {
         errorMessage = error.message;
