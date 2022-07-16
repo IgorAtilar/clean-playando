@@ -1,12 +1,14 @@
-import { Button } from '@/presentation/components/Button';
-import { Input } from '@/presentation/components/Input';
+import { SearchBar } from '@/presentation/components/SearchBar';
 import { Container } from './styles';
 
 export function Home() {
   return (
     <Container>
-      <Input />
-      <Button colorScheme="secondary">Hello there</Button>
+      <SearchBar
+        placeholder="Insira o link ou título do vídeo"
+        onSubmit={(value) => console.log(value)}
+        searchBarType="add"
+      />
     </Container>
   );
 }

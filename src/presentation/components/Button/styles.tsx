@@ -5,9 +5,15 @@ const baseButtonStyles = css`
   align-items: center;
   justify-content: center;
   padding: 12px;
-  border-radius: 8px;
+  border-radius: 4px;
   width: 100%;
+  height: 40px;
   font-weight: ${({ theme }) => theme.fonts.bold};
+  border: none;
+
+  :focus {
+    border: 1px solid ${({ theme }) => theme.colors.white};
+  }
 `;
 
 export const PrimaryButton = styled.button`
