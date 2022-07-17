@@ -24,6 +24,7 @@ export type VideoResponse = {
     title: string;
     thumbnails: Thumbnails;
     channelTitle: string;
+    publishedAt: string;
   };
 };
 
@@ -32,4 +33,5 @@ export type Video = {
   title: string;
   channelTitle: string;
   thumbnails: Thumbnails;
+  publishedAt: string;
 };

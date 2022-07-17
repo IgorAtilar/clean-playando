@@ -33,7 +33,8 @@ export class RemoteSearchVideo implements SearchVideos {
       id: item.id.videoId,
       title: item.snippet.title,
       channelTitle: item.snippet.channelTitle,
-      thumbnails: item.snippet.thumbnails
+      thumbnails: item.snippet.thumbnails,
+      publishedAt: item.snippet.publishedAt
     }));
 
     return { videos };
