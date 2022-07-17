@@ -6,6 +6,7 @@ import {
   SearchVideosParams,
   SearchVideosResponse
 } from '@/domain/usecases/search-videos';
+import { getFormattedDateString } from '@/utils/date';
 
 export type GetSearchVideosResponse = {
   items: VideoResponse[];
@@ -38,7 +39,7 @@ export class RemoteSearchVideo implements SearchVideos {
       title: item.snippet.title,
       channelTitle: item.snippet.channelTitle,
       thumbnails: item.snippet.thumbnails,
-      publishedAt: item.snippet.publishedAt
+      publishedAt: getFormattedDateString(item.snippet.publishedAt)
     }));
 
     return { videos };

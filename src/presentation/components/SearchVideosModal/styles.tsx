@@ -21,9 +21,6 @@ export const ModalHeader = styled.div`
 `;
 
 export const ModalCloseButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
   padding: 12px;
   border-radius: 4px;
   height: 40px;
@@ -31,21 +28,26 @@ export const ModalCloseButton = styled.button`
   font-size: 16px;
   color: ${({ theme }) => theme.colors.primary};
   border: 1px solid transparent;
+  background: transparent;
 
   :focus {
     border: 1px solid ${({ theme }) => theme.colors.white};
   }
-  background: transparent;
 `;
 
-export const ModalContentContainer = styled.div`
+export const InfoContentContainer = styled.div`
   display: flex;
-  width: 100%;
-  height: 100%;
-  flex-direction: column;
+  flex: 1;
   align-items: center;
   justify-content: center;
-  overflow-y: auto;
+`;
+
+export const SearchVideoDetailsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  padding: 16px;
+  gap: 8px;
 `;
 
 export const LoadingContainer = styled.div`

@@ -1,13 +1,15 @@
 import { Video } from '@/domain/models/video-model';
 import { Modal } from '../Modal';
 import { SearchVideoDetails } from '../SearchVideoDetails';
+
 import {
   ErrorMessageContainer,
   LoadingContainer,
   ModalCloseButton,
   ModalContainer,
-  ModalContentContainer,
-  ModalHeader
+  InfoContentContainer,
+  ModalHeader,
+  SearchVideoDetailsContainer
 } from './styles';
 
 export type SearchVideosModalProps = {
@@ -34,11 +36,19 @@ export function SearchVideosModal({
           Resultados
           <ModalCloseButton onClick={onClose}>Fechar</ModalCloseButton>
         </ModalHeader>
-        <ModalContentContainer>
-          {showLoading && <LoadingContainer>Carregando...</LoadingContainer>}
-          {showError && <ErrorMessageContainer>{errorMessage}</ErrorMessageContainer>}
-          {showVideos && videos.map((video) => <SearchVideoDetails key={video.id} video={video} />)}
-        </ModalContentContainer>
+        {showVideos && (
+          <SearchVideoDetailsContainer>
+            {videos.map((video) => (
+              <SearchVideoDetails key={video.id} video={video} />
+            ))}
+          </SearchVideoDetailsContainer>
+        )}
+        {!showVideos && (
+          <InfoContentContainer>
+            {showLoading && <LoadingContainer>Carregando...</LoadingContainer>}
+            {showError && <ErrorMessageContainer>{errorMessage}</ErrorMessageContainer>}
+          </InfoContentContainer>
+        )}
       </ModalContainer>
     </Modal>
   );
