@@ -5,7 +5,6 @@ export class AxiosHttpClient implements HttpGetClient<any, any> {
   constructor(private readonly key?: string, private readonly defaultParams?: any) {}
 
   async get({ url, params }: HttpGetParams<any>): Promise<HttpResponse<any>> {
-    let errorMessage: string;
     let data: any;
     let status: number;
 
@@ -22,15 +21,13 @@ export class AxiosHttpClient implements HttpGetClient<any, any> {
       status = httpResponseStatus;
     } catch (error: any) {
       if (error instanceof AxiosError) {
-        errorMessage = error.message;
         status = error.response.status;
       }
     }
 
     return {
       statusCode: status,
-      data,
-      errorMessage
+      data
     };
   }
 }

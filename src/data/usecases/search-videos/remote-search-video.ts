@@ -24,7 +24,11 @@ export class RemoteSearchVideo implements SearchVideos {
     });
 
     if (statusCode !== 200) {
-      throw new UnexpectedError();
+      const error = new UnexpectedError();
+      return {
+        errorMessage: error.message,
+        videos: []
+      };
     }
 
     if (!data?.items) return { videos: [] };

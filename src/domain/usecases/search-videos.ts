@@ -7,6 +7,7 @@ export type SearchVideosParams = {
 
 export type SearchVideosResponse = {
   videos: Video[];
+  errorMessage?: string;
 };
 
 export interface SearchVideos {

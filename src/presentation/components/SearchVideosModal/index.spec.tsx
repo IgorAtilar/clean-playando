@@ -32,14 +32,9 @@ describe('Presentation: Components/SearchVideosModal', () => {
   });
 
   it('should render the results if results prop is defined', () => {
-    const errorMessageText = 'Um erro ocorreu :C Tente novamente!';
     const videosMock = mockVideos();
     render(<SearchVideosModal {...defaultProps} videos={videosMock} />);
-    const loading = screen.queryByText(/carregando.../i);
-    const errorMessage = screen.queryByText(errorMessageText);
     const result = screen.getByText(videosMock[0].title);
-    expect(loading).not.toBeInTheDocument();
-    expect(errorMessage).not.toBeInTheDocument();
     expect(result).toBeInTheDocument();
   });
 });

@@ -25,7 +25,7 @@ export function SearchVideosModal({
 }: SearchVideosModalProps) {
   const showLoading = !videos?.length && !errorMessage;
   const showError = !videos?.length && !!errorMessage;
-  const showVideos = videos?.length && !errorMessage;
+  const showVideos = !!videos?.length && !errorMessage;
 
   return (
     <Modal isOpen={isOpen}>
@@ -36,9 +36,7 @@ export function SearchVideosModal({
         </ModalHeader>
         <ModalContentContainer>
           {showLoading && <LoadingContainer>Carregando...</LoadingContainer>}
-          {showError && (
-            <ErrorMessageContainer>Um erro ocorreu :C Tente novamente!</ErrorMessageContainer>
-          )}
+          {showError && <ErrorMessageContainer>{errorMessage}</ErrorMessageContainer>}
           {showVideos && videos.map((video) => <SearchVideoDetails key={video.id} video={video} />)}
         </ModalContentContainer>
       </ModalContainer>

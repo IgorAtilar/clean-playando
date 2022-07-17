@@ -27,17 +27,19 @@ describe('Data: RemoteSearchVideo', () => {
     expect(httpGetClientSpy.params).toBe(params);
   });
 
-  it('should throw UnexpectedError if HttpGetClient returns status code different of 200', async () => {
+  it('should return UnexpectedError message as errorMessage if HttpGetClient returns status code different of 200', async () => {
     const url = 'any_url';
     const httpGetClientSpy = new HttpGetClientSpy<SearchVideosParams, GetSearchVideosResponse>();
     httpGetClientSpy.response = {
       statusCode: 400
     };
     const remoteSearchVideo = new RemoteSearchVideo(url, httpGetClientSpy);
-    const errorPromise = remoteSearchVideo.search({
+    const { videos, errorMessage } = await remoteSearchVideo.search({
       q: 'any_search'
     });
-    await expect(errorPromise).rejects.toThrow(new UnexpectedError());
+
+    expect(errorMessage).toBe(new UnexpectedError().message);
+    expect(videos).toHaveLength(0);
   });
 
   it('should return Videos if HttpGetClient return status code 200', async () => {
