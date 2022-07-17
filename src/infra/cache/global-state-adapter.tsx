@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-no-constructed-context-values */
 import { createContext, PropsWithChildren, useContext, useState } from 'react';
 import { AddToGlobalState } from '@/data/protocols/cache/add-global-state';
+import { GetGlobalState } from '@/data/protocols/cache/get-global-state';
 
 type GlobalState = Record<string, any[]>;
 
@@ -36,17 +37,19 @@ export function GlobalStateProvider({ children }: GlobalStateProps) {
   );
 }
 
-export class GlobalStateAdapter implements AddToGlobalState {
+export class GlobalStateAdapter implements AddToGlobalState, GetGlobalState {
   constructor(
-    private readonly addToGlobalState: (key: string, value: any) => void,
-    private readonly globalState: {}
+    private readonly params?: {
+      addToGlobalState?: (key: string, value: any) => void;
+      globalState?: {};
+    }
   ) {}
 
   add(key: string, value: any): void {
-    this.addToGlobalState(key, value);
+    this.params.addToGlobalState(key, value);
   }
 
   get(key: string): any[] {
-    return this.globalState[key];
+    return this.params.globalState[key];
   }
 }

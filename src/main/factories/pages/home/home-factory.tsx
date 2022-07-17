@@ -1,7 +1,10 @@
+import { makePlaylist } from '@/main/usecases/playlist/playlist-factory';
 import { makeSaveVideo } from '@/main/usecases/save-video/save-video-factory';
 import { makeSearchVideos } from '@/main/usecases/search-videos/search-videos-factory';
 import { Home } from '@/presentation/pages/home';
 
 export function MakeHome() {
-  return <Home searchVideos={makeSearchVideos()} saveVideo={makeSaveVideo()} />;
+  return (
+    <Home searchVideos={makeSearchVideos()} saveVideo={makeSaveVideo()} playlist={makePlaylist()} />
+  );
 }

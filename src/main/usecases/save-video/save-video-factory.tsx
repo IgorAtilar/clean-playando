@@ -4,5 +4,5 @@ import { GlobalStateAdapter, useGlobalState } from '@/infra/cache/global-state-a
 
 export function makeSaveVideo(): SaveVideo {
   const { addToGlobalState } = useGlobalState();
-  return new LocalSaveVideo(new GlobalStateAdapter(addToGlobalState, {}));
+  return new LocalSaveVideo(new GlobalStateAdapter({ addToGlobalState }));
 }

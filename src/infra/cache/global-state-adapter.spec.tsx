@@ -8,7 +8,7 @@ describe('Infra: GlobalStateAdapter', () => {
     const wrapper = ({ children }) => <GlobalStateProvider>{children}</GlobalStateProvider>;
     const { result } = renderHook(() => useGlobalState(), { wrapper });
     const { addToGlobalState } = result.current;
-    const globalStateAdapter = new GlobalStateAdapter(addToGlobalState, {});
+    const globalStateAdapter = new GlobalStateAdapter({ addToGlobalState });
 
     const firstValue = faker.datatype.json();
 
@@ -35,7 +35,7 @@ describe('Infra: GlobalStateAdapter', () => {
     const wrapper = ({ children }) => <GlobalStateProvider>{children}</GlobalStateProvider>;
     const { result, rerender } = renderHook(() => useGlobalState(), { wrapper });
     const { addToGlobalState } = result.current;
-    const globalStateAdapter = new GlobalStateAdapter(addToGlobalState, {});
+    const globalStateAdapter = new GlobalStateAdapter({ addToGlobalState });
 
     const firstValue = faker.datatype.json();
 
