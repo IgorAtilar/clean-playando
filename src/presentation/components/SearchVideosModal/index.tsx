@@ -17,12 +17,14 @@ export type SearchVideosModalProps = {
   onClose?: () => void;
   videos?: Video[];
   errorMessage?: string;
+  onAdd?: (video: Video) => void;
 };
 
 export function SearchVideosModal({
   isOpen,
   onClose,
   videos,
+  onAdd,
   errorMessage
 }: SearchVideosModalProps) {
   const showLoading = !videos?.length && !errorMessage;
@@ -39,7 +41,7 @@ export function SearchVideosModal({
         {showVideos && (
           <SearchVideoDetailsContainer>
             {videos.map((video) => (
-              <SearchVideoDetails key={video.id} video={video} />
+              <SearchVideoDetails key={video.id} video={video} onAdd={onAdd} />
             ))}
           </SearchVideoDetailsContainer>
         )}

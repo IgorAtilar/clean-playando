@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker';
 import { SearchVideosResponse } from '@/domain/usecases/search-videos';
 import { GetSearchVideosResponse } from '../usecases/search-videos/remote-search-video';
 import { VideoResponse } from '@/domain/models/video-model';
+import { getFormattedDateString } from '@/utils/date';
 
 export const mockGetResponseVideo = (): VideoResponse => ({
   id: {
@@ -43,7 +44,7 @@ export const mockResponse = (response: GetSearchVideosResponse): SearchVideosRes
     title: video.snippet.title,
     channelTitle: video.snippet.channelTitle,
     thumbnails: video.snippet.thumbnails,
-    publishedAt: video.snippet.publishedAt
+    publishedAt: getFormattedDateString(video.snippet.publishedAt)
   }));
 
   return { videos };

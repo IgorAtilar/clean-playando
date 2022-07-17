@@ -3,12 +3,14 @@ import { SearchVideos } from '@/domain/usecases/search-videos';
 import { SearchBar, SearchVideosModal } from '@/presentation/components';
 import { Container, Logo } from './styles';
 import { Video } from '@/domain/models/video-model';
+import { SaveVideo } from '@/domain/usecases/save-video';
 
 export type HomeProps = {
   searchVideos: SearchVideos;
+  saveVideo: SaveVideo;
 };
 
-export function Home({ searchVideos }: HomeProps) {
+export function Home({ searchVideos, saveVideo }: HomeProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>();
   const [videos, setVideos] = useState<Video[]>();
@@ -25,6 +27,10 @@ export function Home({ searchVideos }: HomeProps) {
     setErrorMessage(errorMessage);
   };
 
+  const handleSaveVideo = (video: Video) => {
+    saveVideo.save(video);
+  };
+
   return (
     <Container>
       <Logo />
@@ -38,6 +44,7 @@ export function Home({ searchVideos }: HomeProps) {
         onClose={() => setIsOpen(false)}
         errorMessage={errorMessage}
         videos={videos}
+        onAdd={handleSaveVideo}
       />
     </Container>
   );
