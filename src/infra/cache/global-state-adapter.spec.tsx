@@ -1,62 +1,50 @@
 import { act } from 'react-dom/test-utils';
-import { faker } from '@faker-js/faker';
 import { renderHook } from '@/utils/test';
 import { GlobalStateAdapter, GlobalStateProvider, useGlobalState } from './global-state-adapter';
+import { mockVideo } from '@/presentation/test/mock-video';
 
 describe('Infra: GlobalStateAdapter', () => {
-  it('should add values on the GlobalState', () => {
+  it('should add videos on the GlobalState playlist', () => {
     const wrapper = ({ children }) => <GlobalStateProvider>{children}</GlobalStateProvider>;
     const { result } = renderHook(() => useGlobalState(), { wrapper });
-    const { addToGlobalState } = result.current;
-    const globalStateAdapter = new GlobalStateAdapter(addToGlobalState, {});
+    const { addToPlaylistState } = result.current;
+    const globalStateAdapter = new GlobalStateAdapter({
+      addToPlaylistState
+    });
 
-    const firstValue = faker.datatype.json();
+    const firstVideo = mockVideo();
 
     act(() => {
-      globalStateAdapter.add('test', firstValue);
+      globalStateAdapter.addToPlaylist(firstVideo);
     });
 
-    expect(result.current.globalState).toStrictEqual({
-      test: [firstValue]
-    });
+    expect(result.current.playlistState).toStrictEqual(new Set([firstVideo]));
 
-    const secondValue = faker.datatype.json();
+    const secondVideo = mockVideo();
 
     act(() => {
-      globalStateAdapter.add('test', secondValue);
+      globalStateAdapter.addToPlaylist(secondVideo);
     });
 
-    expect(result.current.globalState).toStrictEqual({
-      test: [firstValue, secondValue]
-    });
+    expect(result.current.playlistState).toStrictEqual(new Set([firstVideo, secondVideo]));
   });
 
-  it('should return the values on the GlobalState', () => {
+  it('should return the playlist from GlobalState', () => {
     const wrapper = ({ children }) => <GlobalStateProvider>{children}</GlobalStateProvider>;
     const { result, rerender } = renderHook(() => useGlobalState(), { wrapper });
-    const { addToGlobalState } = result.current;
-    const globalStateAdapter = new GlobalStateAdapter(addToGlobalState, {});
+    const { addToPlaylistState, playlistState } = result.current;
+    const globalStateAdapter = new GlobalStateAdapter({ addToPlaylistState, playlistState });
 
-    const firstValue = faker.datatype.json();
-
-    act(() => {
-      globalStateAdapter.add('test', firstValue);
-    });
-
-    expect(result.current.globalState).toStrictEqual({
-      test: [firstValue]
-    });
-
-    const secondValue = faker.datatype.json();
+    const firstVideo = mockVideo();
+    const secondVideo = mockVideo();
 
     act(() => {
-      globalStateAdapter.add('test', secondValue);
+      globalStateAdapter.addToPlaylist(firstVideo);
+      globalStateAdapter.addToPlaylist(secondVideo);
     });
 
     rerender();
 
-    expect(result.current.globalState).toStrictEqual({
-      test: [firstValue, secondValue]
-    });
+    expect(result.current.playlistState).toStrictEqual(new Set([firstVideo, secondVideo]));
   });
 });

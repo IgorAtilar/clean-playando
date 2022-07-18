@@ -22,7 +22,6 @@ describe('Data: LocalSaveVideo', () => {
     const { addToGlobalStateMock: addGlobalStateMock, sut } = makeSut();
     const video = mockVideo();
     sut.save(video);
-    expect(addGlobalStateMock.key).toBe('playlist');
     expect(addGlobalStateMock.value).toStrictEqual([video]);
   });
 });

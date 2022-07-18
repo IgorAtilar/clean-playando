@@ -1,12 +1,14 @@
 /* eslint-disable react/jsx-no-constructed-context-values */
 import { createContext, PropsWithChildren, useContext, useState } from 'react';
-import { AddToGlobalState } from '@/data/protocols/cache/add-global-state';
+import { AddToPlaylistGlobalState } from '@/data/protocols/cache/add-to-playlist-global-state';
+import { GetPlaylistFromGlobalState } from '@/data/protocols/cache/get-playlist-from-global-state';
+import { Video } from '@/domain/models/video-model';
 
 type GlobalState = Record<string, any[]>;
 
 type GlobalStateData = {
-  addToGlobalState(key: string, value: any): void;
-  globalState: GlobalState;
+  addToPlaylistState(value: Video): void;
+  playlistState: Set<Video>;
 };
 
 type GlobalStateProps = PropsWithChildren;
@@ -16,37 +18,36 @@ export const GlobalStateContext = createContext<GlobalStateData>({} as GlobalSta
 export const useGlobalState = (): GlobalStateData => useContext(GlobalStateContext);
 
 export function GlobalStateProvider({ children }: GlobalStateProps) {
-  const [globalState, setGlobalState] = useState<GlobalState>({});
+  const [playlistState, setPlaylistState] = useState<Set<Video>>(new Set([]));
 
-  const addToGlobalState = (key: string, value: any) => {
-    setGlobalState((prevValue) => ({
-      ...prevValue,
-      [key]: [...(prevValue[key] || []), value]
-    }));
+  const addToPlaylistState = (value: Video) => {
+    setPlaylistState((prevValue) => prevValue.add(value));
   };
 
   return (
     <GlobalStateContext.Provider
       value={{
-        addToGlobalState,
-        globalState
+        addToPlaylistState,
+        playlistState
       }}>
       {children}
     </GlobalStateContext.Provider>
   );
 }
 
-export class GlobalStateAdapter implements AddToGlobalState {
+export class GlobalStateAdapter implements AddToPlaylistGlobalState, GetPlaylistFromGlobalState {
   constructor(
-    private readonly addToGlobalState: (key: string, value: any) => void,
-    private readonly globalState: {}
+    private readonly params?: {
+      addToPlaylistState?: (value: Video) => void;
+      playlistState?: Set<Video>;
+    }
   ) {}
 
-  add(key: string, value: any): void {
-    this.addToGlobalState(key, value);
+  addToPlaylist(value: Video): void {
+    this.params?.addToPlaylistState?.(value);
   }
 
-  get(key: string): any[] {
-    return this.globalState[key];
+  getPlaylist(): Set<Video> {
+    return this.params?.playlistState || new Set([]);
   }
 }
