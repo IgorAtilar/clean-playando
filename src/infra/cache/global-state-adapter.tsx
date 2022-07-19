@@ -3,11 +3,11 @@ import { createContext, PropsWithChildren, useContext, useState } from 'react';
 import { AddToPlaylistGlobalState } from '@/data/protocols/cache/add-to-playlist-global-state';
 import { GetPlaylistFromGlobalState } from '@/data/protocols/cache/get-playlist-from-global-state';
 import { Video } from '@/domain/models/video-model';
-
-type GlobalState = Record<string, any[]>;
+import { RemoveFromPlaylistGlobalState } from '@/data/protocols/cache/remove-from-playlist-global-state';
 
 type GlobalStateData = {
   addToPlaylistState(value: Video): void;
+  removeFromPlaylistState(id: string): void;
   playlistState: Video[];
 };
 
@@ -26,21 +26,29 @@ export function GlobalStateProvider({ children }: GlobalStateProps) {
     setPlaylistState((prevVideos) => [...prevVideos, video]);
   };
 
+  const removeFromPlaylistState = (id: string) => {
+    setPlaylistState((prevVideos) => prevVideos.filter((video) => video.id !== id));
+  };
+
   return (
     <GlobalStateContext.Provider
       value={{
         addToPlaylistState,
-        playlistState
+        playlistState,
+        removeFromPlaylistState
       }}>
       {children}
     </GlobalStateContext.Provider>
   );
 }
 
-export class GlobalStateAdapter implements AddToPlaylistGlobalState, GetPlaylistFromGlobalState {
+export class GlobalStateAdapter
+  implements AddToPlaylistGlobalState, GetPlaylistFromGlobalState, RemoveFromPlaylistGlobalState
+{
   constructor(
     private readonly params?: {
       addToPlaylistState?: (value: Video) => void;
+      removeFromPlaylistState?: (id: string) => void;
       playlistState?: Video[];
     }
   ) {}
@@ -51,5 +59,9 @@ export class GlobalStateAdapter implements AddToPlaylistGlobalState, GetPlaylist
 
   getPlaylist(): Video[] {
     return this.params?.playlistState || [];
+  }
+
+  removeFromPlaylist(id: string): void {
+    this.params.removeFromPlaylistState(id);
   }
 }

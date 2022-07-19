@@ -3,6 +3,7 @@ import { SearchVideos } from '@/domain/usecases/search-videos';
 import { Video } from '@/domain/models/video-model';
 import { SaveVideo } from '@/domain/usecases/save-video';
 import { Playlist } from '@/domain/usecases/playlist';
+import { RemoveVideo } from '@/domain/usecases/remove-video';
 import { Player } from '@/presentation/components/Player';
 import { SearchVideosModal } from '@/presentation/components';
 
@@ -12,26 +13,31 @@ export type HomeProps = {
   searchVideos: SearchVideos;
   saveVideo: SaveVideo;
   playlist: Playlist;
+  removeVideo: RemoveVideo;
 };
 
-export function Home({ searchVideos, saveVideo, playlist }: HomeProps) {
+export function Home({ searchVideos, saveVideo, playlist, removeVideo }: HomeProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>();
   const [videos, setVideos] = useState<Video[]>();
   const [videoPlayingId, setVideoPlayingId] = useState<string>('');
+  const [isSearchLoading, setIsSearchLoading] = useState(false);
 
   const playlistVideos = playlist.get();
 
   const handleSubmit = async (value?: string) => {
     if (!value) return;
     setIsOpen(true);
+    setIsSearchLoading(true);
 
     const { videos, errorMessage } = await searchVideos.search({
       q: value,
       maxResults: 4
     });
+
     setVideos(videos);
     setErrorMessage(errorMessage);
+    setIsSearchLoading(false);
   };
 
   const handleSaveVideo = (video: Video) => {
@@ -43,6 +49,8 @@ export function Home({ searchVideos, saveVideo, playlist }: HomeProps) {
 
     return setVideoPlayingId(id);
   };
+
+  const handleRemoveVideo = (id: string) => removeVideo.remove(id);
 
   return (
     <Container>
@@ -58,7 +66,9 @@ export function Home({ searchVideos, saveVideo, playlist }: HomeProps) {
         errorMessage={errorMessage}
         videos={videos}
         onAdd={handleSaveVideo}
+        isLoading={isSearchLoading}
       />
+
       <PlaylistContainer>
         {playlistVideos.map((video) => (
           <Player
@@ -66,6 +76,7 @@ export function Home({ searchVideos, saveVideo, playlist }: HomeProps) {
             isPlaying={video.id === videoPlayingId}
             video={video}
             togglePlay={handleTogglePlay}
+            onRemove={handleRemoveVideo}
           />
         ))}
       </PlaylistContainer>

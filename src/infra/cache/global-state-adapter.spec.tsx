@@ -18,7 +18,7 @@ describe('Infra: GlobalStateAdapter', () => {
       globalStateAdapter.addToPlaylist(firstVideo);
     });
 
-    expect(result.current.playlistState).toStrictEqual(new Set([firstVideo]));
+    expect(result.current.playlistState).toStrictEqual([firstVideo]);
 
     const secondVideo = mockVideo();
 
@@ -26,7 +26,7 @@ describe('Infra: GlobalStateAdapter', () => {
       globalStateAdapter.addToPlaylist(secondVideo);
     });
 
-    expect(result.current.playlistState).toStrictEqual(new Set([firstVideo, secondVideo]));
+    expect(result.current.playlistState).toStrictEqual([firstVideo, secondVideo]);
   });
 
   it('should return the playlist from GlobalState', () => {
@@ -45,6 +45,30 @@ describe('Infra: GlobalStateAdapter', () => {
 
     rerender();
 
-    expect(result.current.playlistState).toStrictEqual(new Set([firstVideo, secondVideo]));
+    expect(result.current.playlistState).toStrictEqual([firstVideo, secondVideo]);
+  });
+
+  it('should remove a video from the playlist on GlobalState', () => {
+    const wrapper = ({ children }) => <GlobalStateProvider>{children}</GlobalStateProvider>;
+    const { result, rerender } = renderHook(() => useGlobalState(), { wrapper });
+    const { addToPlaylistState, playlistState, removeFromPlaylistState } = result.current;
+    const globalStateAdapter = new GlobalStateAdapter({
+      addToPlaylistState,
+      playlistState,
+      removeFromPlaylistState
+    });
+
+    const firstVideo = mockVideo();
+    const secondVideo = mockVideo();
+
+    act(() => {
+      globalStateAdapter.addToPlaylist(firstVideo);
+      globalStateAdapter.addToPlaylist(secondVideo);
+      globalStateAdapter.removeFromPlaylist(firstVideo.id);
+    });
+
+    rerender();
+
+    expect(result.current.playlistState).toStrictEqual([secondVideo]);
   });
 });

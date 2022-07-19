@@ -18,6 +18,7 @@ export type SearchVideosModalProps = {
   videos?: Video[];
   errorMessage?: string;
   onAdd?: (video: Video) => void;
+  isLoading?: boolean;
 };
 
 export function SearchVideosModal({
@@ -25,11 +26,11 @@ export function SearchVideosModal({
   onClose,
   videos,
   onAdd,
-  errorMessage
+  errorMessage,
+  isLoading
 }: SearchVideosModalProps) {
-  const showLoading = !videos?.length && !errorMessage;
   const showError = !videos?.length && !!errorMessage;
-  const showVideos = !!videos?.length && !errorMessage;
+  const showVideos = !!videos?.length && !errorMessage && !isLoading;
 
   return (
     <Modal isOpen={isOpen}>
@@ -47,7 +48,7 @@ export function SearchVideosModal({
         )}
         {!showVideos && (
           <InfoContentContainer>
-            {showLoading && <LoadingContainer>Carregando...</LoadingContainer>}
+            {isLoading && <LoadingContainer>Carregando...</LoadingContainer>}
             {showError && <ErrorMessageContainer>{errorMessage}</ErrorMessageContainer>}
           </InfoContentContainer>
         )}

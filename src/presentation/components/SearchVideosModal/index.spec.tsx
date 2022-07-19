@@ -16,8 +16,8 @@ describe('Presentation: Components/SearchVideosModal', () => {
     expect(handler).toHaveBeenCalledTimes(1);
   });
 
-  it('should render the loading state if results prop is undefined or empty', () => {
-    render(<SearchVideosModal {...defaultProps} videos={[]} />);
+  it('should render the loading state isLoading prop is true', () => {
+    render(<SearchVideosModal {...defaultProps} videos={[]} isLoading />);
     const loading = screen.getByText(/carregando.../i);
     expect(loading).toBeInTheDocument();
   });

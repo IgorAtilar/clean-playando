@@ -9,9 +9,15 @@ export type PlayerProps = {
   video: Video;
   isPlaying?: boolean;
   togglePlay?: (id: string) => void;
+  onRemove?: (id: string) => void;
 };
 
-export function Player({ video: { id, thumbnails }, isPlaying, togglePlay }: PlayerProps) {
+export function Player({
+  video: { id, thumbnails },
+  isPlaying,
+  togglePlay,
+  onRemove
+}: PlayerProps) {
   const playerRef = useRef<YoutubePlayer>();
   let progress = 0;
   const [played, setPlayed] = useState<number>(0);
@@ -50,7 +56,9 @@ export function Player({ video: { id, thumbnails }, isPlaying, togglePlay }: Pla
       />
       <ControlsContainer>
         <Button onClick={() => togglePlay?.(id)}>{isPlaying ? 'Pausar' : 'Play'}</Button>
-        <Button colorScheme="secondary">Excluir</Button>
+        <Button onClick={() => onRemove?.(id)} colorScheme="secondary">
+          Excluir
+        </Button>
       </ControlsContainer>
     </YoutuberPlayerContainer>
   );

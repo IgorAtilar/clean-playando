@@ -15,9 +15,8 @@ export const SearchBar = styled(BaseSearchBar)`
 `;
 
 export const PlaylistContainer = styled.div`
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 340px);
   gap: 24px;
+  justify-content: center;
 `;
