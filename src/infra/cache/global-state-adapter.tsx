@@ -8,7 +8,7 @@ type GlobalState = Record<string, any[]>;
 
 type GlobalStateData = {
   addToPlaylistState(value: Video): void;
-  playlistState: Set<Video>;
+  playlistState: Video[];
 };
 
 type GlobalStateProps = PropsWithChildren;
@@ -18,10 +18,12 @@ export const GlobalStateContext = createContext<GlobalStateData>({} as GlobalSta
 export const useGlobalState = (): GlobalStateData => useContext(GlobalStateContext);
 
 export function GlobalStateProvider({ children }: GlobalStateProps) {
-  const [playlistState, setPlaylistState] = useState<Set<Video>>(new Set([]));
+  const [playlistState, setPlaylistState] = useState<Video[]>([]);
 
-  const addToPlaylistState = (value: Video) => {
-    setPlaylistState((prevValue) => prevValue.add(value));
+  const addToPlaylistState = (video: Video) => {
+    if (playlistState.find((value) => value.id === video.id)) return;
+
+    setPlaylistState((prevVideos) => [...prevVideos, video]);
   };
 
   return (
@@ -39,7 +41,7 @@ export class GlobalStateAdapter implements AddToPlaylistGlobalState, GetPlaylist
   constructor(
     private readonly params?: {
       addToPlaylistState?: (value: Video) => void;
-      playlistState?: Set<Video>;
+      playlistState?: Video[];
     }
   ) {}
 
@@ -47,7 +49,7 @@ export class GlobalStateAdapter implements AddToPlaylistGlobalState, GetPlaylist
     this.params?.addToPlaylistState?.(value);
   }
 
-  getPlaylist(): Set<Video> {
-    return this.params?.playlistState || new Set([]);
+  getPlaylist(): Video[] {
+    return this.params?.playlistState || [];
   }
 }

@@ -5,7 +5,7 @@ import { Playlist } from '@/domain/usecases/playlist';
 export class LocalPlaylist implements Playlist {
   constructor(private readonly getGlobalState: GetPlaylistFromGlobalState) {}
 
-  get(): Set<Video> {
+  get(): Video[] {
     return this.getGlobalState.getPlaylist();
   }
 }

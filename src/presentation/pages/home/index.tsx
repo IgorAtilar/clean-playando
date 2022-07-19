@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { SearchVideos } from '@/domain/usecases/search-videos';
-import { SearchBar, SearchVideosModal } from '@/presentation/components';
-import { Container, Logo } from './styles';
 import { Video } from '@/domain/models/video-model';
 import { SaveVideo } from '@/domain/usecases/save-video';
 import { Playlist } from '@/domain/usecases/playlist';
+import { Player } from '@/presentation/components/Player';
+import { SearchVideosModal } from '@/presentation/components';
+
+import { Container, Logo, PlaylistContainer, SearchBar } from './styles';
 
 export type HomeProps = {
   searchVideos: SearchVideos;
@@ -16,6 +18,8 @@ export function Home({ searchVideos, saveVideo, playlist }: HomeProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>();
   const [videos, setVideos] = useState<Video[]>();
+  const [videoPlayingId, setVideoPlayingId] = useState<string>('');
+
   const playlistVideos = playlist.get();
 
   const handleSubmit = async (value?: string) => {
@@ -34,13 +38,19 @@ export function Home({ searchVideos, saveVideo, playlist }: HomeProps) {
     saveVideo.save(video);
   };
 
+  const handleTogglePlay = (id: string) => {
+    if (id === videoPlayingId) return setVideoPlayingId('');
+
+    return setVideoPlayingId(id);
+  };
+
   return (
     <Container>
       <Logo />
       <SearchBar
         placeholder="Insira o link ou título do vídeo"
         onSubmit={handleSubmit}
-        searchBarType="add"
+        searchBarType="search"
       />
       <SearchVideosModal
         isOpen={isOpen}
@@ -49,6 +59,16 @@ export function Home({ searchVideos, saveVideo, playlist }: HomeProps) {
         videos={videos}
         onAdd={handleSaveVideo}
       />
+      <PlaylistContainer>
+        {playlistVideos.map((video) => (
+          <Player
+            key={video.id}
+            isPlaying={video.id === videoPlayingId}
+            video={video}
+            togglePlay={handleTogglePlay}
+          />
+        ))}
+      </PlaylistContainer>
     </Container>
   );
 }
