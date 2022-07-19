@@ -1,4 +1,4 @@
-import React, { FormEvent, FormHTMLAttributes } from 'react';
+import { FormEvent, FormHTMLAttributes } from 'react';
 import { Button, Input } from '@/presentation/components';
 
 import { Form } from './styles';
@@ -36,16 +36,9 @@ export function SearchBar({
     onSubmit(value);
   };
 
-  const handleEnterPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key !== 'Enter') return;
-    e.preventDefault();
-    const { value } = e.target;
-    onSubmit(value);
-  };
-
   return (
     <Form {...htmlProps} onSubmit={handleSubmit}>
-      <Input name="search" placeholder={placeholder} onKeyDown={handleEnterPress} />
+      <Input name="search" placeholder={placeholder} />
       <Button type="submit">{mapSearchBarTypeToButtonText[searchBarType]}</Button>
     </Form>
   );

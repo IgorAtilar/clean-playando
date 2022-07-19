@@ -4,3 +4,6 @@ export * from './Logo';
 export * from './SearchBar';
 export * from './Modal';
 export * from './SearchVideosModal';
+export * from './SearchVideoDetails';
+export * from './FilterBar';
+export * from './Player';

@@ -4,10 +4,9 @@ import { Video } from '@/domain/models/video-model';
 import { SaveVideo } from '@/domain/usecases/save-video';
 import { Playlist } from '@/domain/usecases/playlist';
 import { RemoveVideo } from '@/domain/usecases/remove-video';
-import { Player } from '@/presentation/components/Player';
-import { SearchVideosModal } from '@/presentation/components';
+import { SearchVideosModal, Player } from '@/presentation/components';
 
-import { Container, Logo, PlaylistContainer, SearchBar } from './styles';
+import { Container, FilterBar, Logo, PlaylistContainer, SearchBar } from './styles';
 
 export type HomeProps = {
   searchVideos: SearchVideos;
@@ -60,6 +59,11 @@ export function Home({ searchVideos, saveVideo, playlist, removeVideo }: HomePro
         onSubmit={handleSubmit}
         searchBarType="search"
       />
+      <FilterBar
+        placeholder="Palavras-chave"
+        onSubmit={(value) => console.log(value)}
+        filterBarType="filter"
+      />
       <SearchVideosModal
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
@@ -68,7 +72,6 @@ export function Home({ searchVideos, saveVideo, playlist, removeVideo }: HomePro
         onAdd={handleSaveVideo}
         isLoading={isSearchLoading}
       />
-
       <PlaylistContainer>
         {playlistVideos.map((video) => (
           <Player
