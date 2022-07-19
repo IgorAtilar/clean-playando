@@ -27,6 +27,8 @@ export function Player({ video: { id, thumbnails }, isPlaying, togglePlay }: Pla
     }
   }, [isPlaying]);
 
+  // !TODO: Add static thumbnail
+
   return (
     <YoutuberPlayerContainer>
       <YoutubePlayer
