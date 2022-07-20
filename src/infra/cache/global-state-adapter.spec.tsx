@@ -71,4 +71,35 @@ describe('Infra: GlobalStateAdapter', () => {
 
     expect(result.current.playlistState).toStrictEqual([secondVideo]);
   });
+
+  it('should filter the playlist on GlobalState based on the video title', async () => {
+    const wrapper = ({ children }) => <GlobalStateProvider>{children}</GlobalStateProvider>;
+    const { result, rerender } = renderHook(() => useGlobalState(), { wrapper });
+    const { addToPlaylistState, playlistState, removeFromPlaylistState, filterPlaylistState } =
+      result.current;
+    const globalStateAdapter = new GlobalStateAdapter({
+      addToPlaylistState,
+      playlistState,
+      removeFromPlaylistState,
+      filterPlaylistState
+    });
+
+    const firstVideo = { ...mockVideo(), title: 'first video text' };
+    const secondVideo = { ...mockVideo(), title: 'second video text' };
+    const thirdVideo = { ...mockVideo(), title: 'third video text' };
+
+    act(() => {
+      globalStateAdapter.addToPlaylist(firstVideo);
+      globalStateAdapter.addToPlaylist(secondVideo);
+      globalStateAdapter.addToPlaylist(thirdVideo);
+    });
+
+    rerender();
+
+    act(() => {
+      globalStateAdapter.filterPlaylist('third');
+    });
+
+    expect(result.current.playlistState).toStrictEqual([thirdVideo]);
+  });
 });

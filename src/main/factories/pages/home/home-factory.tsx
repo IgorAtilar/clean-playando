@@ -1,3 +1,4 @@
+import { makeFilterPlaylist } from '@/main/usecases/filter-playlist/filter-playlist-factory';
 import { makePlaylist } from '@/main/usecases/playlist/playlist-factory';
 import { makeRemoveVideo } from '@/main/usecases/remove-video/remove-video-factory';
 import { makeSaveVideo } from '@/main/usecases/save-video/save-video-factory';
@@ -11,6 +12,7 @@ export function MakeHome() {
       saveVideo={makeSaveVideo()}
       playlist={makePlaylist()}
       removeVideo={makeRemoveVideo()}
+      filterPlaylist={makeFilterPlaylist()}
     />
   );
 }
