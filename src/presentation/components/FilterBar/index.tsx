@@ -1,20 +1,16 @@
-import { FormEvent, FormHTMLAttributes } from 'react';
+import { FormEvent, useRef } from 'react';
 import { Button } from '../Button';
 import { Input } from '../Input';
-import { Form } from './styles';
+import { Container } from './styles';
 
 export type FilterBarType = 'filter' | 'clear';
 
-export type FilterBarProps = Omit<FormHTMLAttributes<HTMLFormElement>, 'onSubmit'> & {
+export type FilterBarProps = {
   filterBarType?: FilterBarType;
   onSubmit: (value: string) => void;
   placeholder?: string;
-};
-
-type FilterBarElements = HTMLFormControlsCollection & {
-  filter: {
-    value: string;
-  };
+  onClear?: () => void;
+  className?: string;
 };
 
 export const mapFilterBarTypeToText: Record<FilterBarType, string> = {
@@ -22,24 +18,44 @@ export const mapFilterBarTypeToText: Record<FilterBarType, string> = {
   clear: 'Limpar filtro'
 };
 
-export const getButtonText = (type?: FilterBarType) =>
-  type ? mapFilterBarTypeToText[type] : mapFilterBarTypeToText.filter;
+export function FilterBar({
+  filterBarType = 'filter',
+  onSubmit,
+  placeholder,
+  onClear,
+  className
+}: FilterBarProps) {
+  const inputRef = useRef<HTMLInputElement>();
 
-export function FilterBar({ filterBarType, onSubmit, placeholder, ...htmlProps }: FilterBarProps) {
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e?: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const {
-      filter: { value }
-    } = e.currentTarget.elements as FilterBarElements;
+    const { value } = inputRef.current;
     onSubmit(value);
+    inputRef.current.value = '';
+    inputRef.current.blur();
+  };
+
+  const handleFilter = () => {
+    const { value } = inputRef.current;
+    onSubmit(value);
+    inputRef.current.value = '';
+    inputRef.current.blur();
   };
 
   return (
-    <Form {...htmlProps} onSubmit={handleSubmit}>
-      <Input name="filter" placeholder={placeholder} />
-      <Button type="submit" colorScheme="secondary">
-        {getButtonText(filterBarType)}
-      </Button>
-    </Form>
+    <Container className={className}>
+      <form onSubmit={handleSubmit}>
+        <Input ref={inputRef} name="filter" placeholder={placeholder} />
+      </form>
+      {filterBarType === 'filter' ? (
+        <Button type="button" colorScheme="secondary" onClick={handleFilter}>
+          {mapFilterBarTypeToText[filterBarType]}
+        </Button>
+      ) : (
+        <Button type="button" colorScheme="secondary" onClick={() => onClear?.()}>
+          {mapFilterBarTypeToText[filterBarType]}
+        </Button>
+      )}
+    </Container>
   );
 }

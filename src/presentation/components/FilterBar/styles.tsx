@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const Form = styled.form`
+export const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -9,7 +9,7 @@ export const Form = styled.form`
     width: 24%;
   }
 
-  input {
+  form {
     width: 72%;
   }
 `;

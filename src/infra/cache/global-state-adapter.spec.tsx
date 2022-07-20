@@ -102,4 +102,49 @@ describe('Infra: GlobalStateAdapter', () => {
 
     expect(result.current.playlistState).toStrictEqual([thirdVideo]);
   });
+
+  it('should remove the filter on playlist when removeFilterOnPlaylist is called', () => {
+    const wrapper = ({ children }) => <GlobalStateProvider>{children}</GlobalStateProvider>;
+    const { result, rerender } = renderHook(() => useGlobalState(), { wrapper });
+    const {
+      addToPlaylistState,
+      playlistState,
+      removeFromPlaylistState,
+      filterPlaylistState,
+      removeFilterOnPlaylistState
+    } = result.current;
+    const globalStateAdapter = new GlobalStateAdapter({
+      addToPlaylistState,
+      playlistState,
+      removeFromPlaylistState,
+      filterPlaylistState,
+      removeFilterOnPlaylistState
+    });
+
+    const firstVideo = { ...mockVideo(), title: 'first video text' };
+    const secondVideo = { ...mockVideo(), title: 'second video text' };
+    const thirdVideo = { ...mockVideo(), title: 'third video text' };
+
+    act(() => {
+      globalStateAdapter.addToPlaylist(firstVideo);
+      globalStateAdapter.addToPlaylist(secondVideo);
+      globalStateAdapter.addToPlaylist(thirdVideo);
+    });
+
+    rerender();
+
+    act(() => {
+      globalStateAdapter.filterPlaylist('third');
+    });
+
+    expect(result.current.playlistState).toStrictEqual([thirdVideo]);
+
+    act(() => {
+      globalStateAdapter.removeFilterOnPlaylist();
+    });
+
+    rerender();
+
+    expect(result.current.playlistState).toStrictEqual([firstVideo, secondVideo, thirdVideo]);
+  });
 });

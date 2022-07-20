@@ -5,9 +5,10 @@ import { SaveVideo } from '@/domain/usecases/save-video';
 import { Playlist } from '@/domain/usecases/playlist';
 import { RemoveVideo } from '@/domain/usecases/remove-video';
 import { FilterPlaylist } from '@/domain/usecases/filter-playlist';
-import { SearchVideosModal, Player } from '@/presentation/components';
+import { SearchVideosModal, Player, FilterBarType } from '@/presentation/components';
 
 import { Container, FilterBar, Logo, PlaylistContainer, SearchBar } from './styles';
+import { RemoveFilterOnPlaylist } from '@/domain/usecases/remove-filter-of-playlist';
 
 export type HomeProps = {
   searchVideos: SearchVideos;
@@ -15,6 +16,7 @@ export type HomeProps = {
   playlist: Playlist;
   removeVideo: RemoveVideo;
   filterPlaylist: FilterPlaylist;
+  removeFilterOnPlaylist: RemoveFilterOnPlaylist;
 };
 
 export function Home({
@@ -22,13 +24,15 @@ export function Home({
   saveVideo,
   playlist,
   removeVideo,
-  filterPlaylist
+  filterPlaylist,
+  removeFilterOnPlaylist
 }: HomeProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>();
   const [videos, setVideos] = useState<Video[]>();
   const [videoPlayingId, setVideoPlayingId] = useState<string>('');
   const [isSearchLoading, setIsSearchLoading] = useState(false);
+  const [filterBarType, setFilterBarType] = useState<FilterBarType>('filter');
 
   const playlistVideos = playlist.get();
 
@@ -59,7 +63,15 @@ export function Home({
 
   const handleRemoveVideo = (id: string) => removeVideo.remove(id);
 
-  const handleFilterPlaylist = (value: string) => filterPlaylist.filter(value);
+  const handleFilterPlaylist = (value: string) => {
+    filterPlaylist.filter(value);
+    setFilterBarType('clear');
+  };
+
+  const handleRemoveFilterOnPlaylist = () => {
+    removeFilterOnPlaylist.remove();
+    setFilterBarType('filter');
+  };
 
   return (
     <Container>
@@ -72,7 +84,8 @@ export function Home({
       <FilterBar
         placeholder="Palavras-chave"
         onSubmit={handleFilterPlaylist}
-        filterBarType="filter"
+        filterBarType={filterBarType}
+        onClear={handleRemoveFilterOnPlaylist}
       />
       <SearchVideosModal
         isOpen={isOpen}
