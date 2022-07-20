@@ -1,12 +1,14 @@
 /* eslint-disable react/jsx-no-constructed-context-values */
 import { createContext, PropsWithChildren, useContext, useEffect, useRef, useState } from 'react';
-import { AddToPlaylistGlobalState } from '@/data/protocols/cache/add-to-playlist-global-state';
-import { GetPlaylistFromGlobalState } from '@/data/protocols/cache/get-playlist-from-global-state';
-import { FilterPlaylistOnGlobalState } from '@/data/protocols/cache/filter-playlist-on-global-state';
-import { RemoveFromPlaylistGlobalState } from '@/data/protocols/cache/remove-from-playlist-global-state';
-import { RemoveFilterOnPlaylistOnGlobalState } from '@/data/protocols/cache/remove-filter-on-playlist-on-global-state';
 import { Video } from '@/domain/models/video-model';
-import { PersistentStorageAdapter } from './persistent-storage-adapter';
+import {
+  AddToPlaylistGlobalState,
+  GetPlaylistFromGlobalState,
+  FilterPlaylistOnGlobalState,
+  RemoveFromPlaylistGlobalState,
+  RemoveFilterOnPlaylistOnGlobalState
+} from '@/data/protocols/cache/global-state';
+import { PersistentStorageAdapter } from '../persistent-storage-adapter';
 
 type GlobalStateData = {
   addToPlaylistState(value: Video): void;

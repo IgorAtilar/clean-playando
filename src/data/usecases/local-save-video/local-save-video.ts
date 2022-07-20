@@ -1,4 +1,4 @@
-import { AddToPlaylistGlobalState } from '@/data/protocols/cache/add-to-playlist-global-state';
+import { AddToPlaylistGlobalState } from '@/data/protocols/cache/global-state';
 import { Video } from '@/domain/models/video-model';
 import { SaveVideo } from '@/domain/usecases/save-video';
 

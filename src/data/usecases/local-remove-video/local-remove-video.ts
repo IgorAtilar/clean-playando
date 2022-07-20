@@ -1,4 +1,4 @@
-import { RemoveFromPlaylistGlobalState } from '@/data/protocols/cache/remove-from-playlist-global-state';
+import { RemoveFromPlaylistGlobalState } from '@/data/protocols/cache/global-state';
 import { RemoveVideo } from '@/domain/usecases/remove-video';
 
 export class LocalRemoveVideo implements RemoveVideo {

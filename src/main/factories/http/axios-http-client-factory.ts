@@ -1,4 +1,4 @@
-import { AxiosHttpClient } from '@/infra/axios-http-client/axios-http-client';
+import { AxiosHttpClient } from '@/infra/axios-http-client';
 import { makeApiKey } from './api-key-factory';
 
 const defaultParams = {

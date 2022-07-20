@@ -1,5 +1,7 @@
-import { GetFromPersistentStorage } from '@/data/protocols/cache/get-from-persistent-storage';
-import { SetPersistentStorage } from '@/data/protocols/cache/set-persistent-storage';
+import {
+  SetPersistentStorage,
+  GetFromPersistentStorage
+} from '@/data/protocols/cache/persistent-storage';
 
 export class PersistentStorageAdapter implements GetFromPersistentStorage, SetPersistentStorage {
   set(key: string, value: any): void {
