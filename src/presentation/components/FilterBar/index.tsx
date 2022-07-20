@@ -27,7 +27,7 @@ export function FilterBar({
 }: FilterBarProps) {
   const inputRef = useRef<HTMLInputElement>();
 
-  const handleSubmit = (e?: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const { value } = inputRef.current;
     onSubmit(value);

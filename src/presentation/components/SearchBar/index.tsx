@@ -1,4 +1,4 @@
-import { ChangeEvent, useRef } from 'react';
+import { ChangeEvent, FormEvent, useRef } from 'react';
 import { Button, Input } from '@/presentation/components';
 
 import { Container } from './styles';
@@ -29,7 +29,15 @@ export function SearchBar({
 }: SearchBarProps) {
   const inputRef = useRef<HTMLInputElement>();
 
-  const handleSubmit = () => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const { value } = inputRef.current;
+    onSearch(value);
+    inputRef.current.value = '';
+    inputRef.current.blur();
+  };
+
+  const handleSearch = () => {
     const { value } = inputRef.current;
     onSearch(value);
     inputRef.current.value = '';
@@ -58,7 +66,7 @@ export function SearchBar({
         />
       </form>
       {searchBarType === 'search' ? (
-        <Button type="button" onClick={handleSubmit}>
+        <Button type="button" onClick={handleSearch}>
           {mapSearchBarTypeToButtonText[searchBarType]}
         </Button>
       ) : (
