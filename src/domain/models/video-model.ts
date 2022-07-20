@@ -28,6 +28,16 @@ export type VideoResponse = {
   };
 };
 
+export type VideoByUrlResponse = {
+  id: string;
+  snippet: {
+    title: string;
+    thumbnails: Thumbnails;
+    channelTitle: string;
+    publishedAt: string;
+  };
+};
+
 export type Video = {
   id: string;
   title: string;

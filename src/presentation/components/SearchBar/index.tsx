@@ -1,20 +1,17 @@
-import { FormEvent, FormHTMLAttributes } from 'react';
+import { ChangeEvent, useRef } from 'react';
 import { Button, Input } from '@/presentation/components';
 
-import { Form } from './styles';
+import { Container } from './styles';
 
 export type SearchBarType = 'add' | 'search';
 
-export type SearchBarProps = Omit<FormHTMLAttributes<HTMLFormElement>, 'onSubmit'> & {
-  onSubmit: (value: string) => void;
+export type SearchBarProps = {
+  onSearch: (value: string) => void;
+  onInputChange: (value: string) => void;
+  onAdd: (videoUrl: string) => void;
   placeholder?: string;
   searchBarType?: SearchBarType;
-};
-
-type SearchBarElements = HTMLFormControlsCollection & {
-  search: {
-    value: string;
-  };
+  className?: string;
 };
 
 export const mapSearchBarTypeToButtonText: Record<SearchBarType, string> = {
@@ -23,23 +20,52 @@ export const mapSearchBarTypeToButtonText: Record<SearchBarType, string> = {
 };
 
 export function SearchBar({
-  onSubmit,
+  onSearch,
+  onInputChange,
+  onAdd,
   placeholder = '',
   searchBarType = 'search',
-  ...htmlProps
+  className
 }: SearchBarProps) {
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const {
-      search: { value }
-    } = e.currentTarget.elements as SearchBarElements;
-    onSubmit(value);
+  const inputRef = useRef<HTMLInputElement>();
+
+  const handleSubmit = () => {
+    const { value } = inputRef.current;
+    onSearch(value);
+    inputRef.current.value = '';
+    inputRef.current.blur();
+  };
+
+  const handleAdd = () => {
+    const { value } = inputRef.current;
+    onAdd(value);
+    inputRef.current.value = '';
+    inputRef.current.blur();
+  };
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    onInputChange(e.target.value);
   };
 
   return (
-    <Form {...htmlProps} onSubmit={handleSubmit}>
-      <Input name="search" placeholder={placeholder} />
-      <Button type="submit">{mapSearchBarTypeToButtonText[searchBarType]}</Button>
-    </Form>
+    <Container className={className}>
+      <form onSubmit={handleSubmit}>
+        <Input
+          ref={inputRef}
+          onChange={handleInputChange}
+          name="search"
+          placeholder={placeholder}
+        />
+      </form>
+      {searchBarType === 'search' ? (
+        <Button type="button" onClick={handleSubmit}>
+          {mapSearchBarTypeToButtonText[searchBarType]}
+        </Button>
+      ) : (
+        <Button type="button" onClick={handleAdd}>
+          {mapSearchBarTypeToButtonText[searchBarType]}
+        </Button>
+      )}
+    </Container>
   );
 }

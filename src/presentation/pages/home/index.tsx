@@ -5,13 +5,16 @@ import { SaveVideo } from '@/domain/usecases/save-video';
 import { Playlist } from '@/domain/usecases/playlist';
 import { RemoveVideo } from '@/domain/usecases/remove-video';
 import { FilterPlaylist } from '@/domain/usecases/filter-playlist';
-import { SearchVideosModal, Player, FilterBarType } from '@/presentation/components';
+import { RemoveFilterOnPlaylist } from '@/domain/usecases/remove-filter-of-playlist';
+import { SearchVideoByUrl } from '@/domain/usecases/search-video-by-url';
+import { SearchVideosModal, Player, FilterBarType, SearchBarType } from '@/presentation/components';
+import { isYoutubeVideoUrl } from '@/services/youtube';
 
 import { Container, FilterBar, Logo, PlaylistContainer, SearchBar } from './styles';
-import { RemoveFilterOnPlaylist } from '@/domain/usecases/remove-filter-of-playlist';
 
 export type HomeProps = {
   searchVideos: SearchVideos;
+  searchVideoByUrl: SearchVideoByUrl;
   saveVideo: SaveVideo;
   playlist: Playlist;
   removeVideo: RemoveVideo;
@@ -22,6 +25,7 @@ export type HomeProps = {
 export function Home({
   searchVideos,
   saveVideo,
+  searchVideoByUrl,
   playlist,
   removeVideo,
   filterPlaylist,
@@ -33,6 +37,7 @@ export function Home({
   const [videoPlayingId, setVideoPlayingId] = useState<string>('');
   const [isSearchLoading, setIsSearchLoading] = useState(false);
   const [filterBarType, setFilterBarType] = useState<FilterBarType>('filter');
+  const [searchBarType, setSearchBarType] = useState<SearchBarType>('search');
 
   const playlistVideos = playlist.get();
 
@@ -53,6 +58,22 @@ export function Home({
 
   const handleSaveVideo = (video: Video) => {
     saveVideo.save(video);
+  };
+
+  const handleSaveVideoByUrl = async (videoUrl: string) => {
+    if (!videoUrl) return;
+
+    const { video } = await searchVideoByUrl.search(videoUrl);
+
+    handleSaveVideo(video);
+
+    setSearchBarType('search');
+  };
+
+  const handleSearchBarInputChange = (value: string) => {
+    if (isYoutubeVideoUrl(value)) return setSearchBarType('add');
+
+    return setSearchBarType('search');
   };
 
   const handleTogglePlay = (id: string) => {
@@ -78,8 +99,10 @@ export function Home({
       <Logo />
       <SearchBar
         placeholder="Insira o link ou título do vídeo"
-        onSubmit={handleSubmit}
-        searchBarType="search"
+        onSearch={handleSubmit}
+        searchBarType={searchBarType}
+        onAdd={handleSaveVideoByUrl}
+        onInputChange={handleSearchBarInputChange}
       />
       <FilterBar
         placeholder="Palavras-chave"

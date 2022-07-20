@@ -1,13 +1,11 @@
 import { faker } from '@faker-js/faker';
-import { SearchVideosResponse } from '@/domain/usecases/search-videos';
-import { VideoResponse } from '@/domain/models/video-model';
-import { GetSearchVideosResponse } from '@/data/usecases/remote-search-videos/remote-search-video';
+import { SearchVideoByUrlResponse } from '@/domain/usecases/search-video-by-url';
+import { VideoByUrlResponse } from '@/domain/models/video-model';
+import { GetSearchVideoByUrlResponse } from '@/data/usecases/remote-search-video-by-url/remote-search-video-by-url';
 import { getFormattedDateString } from '@/utils/date';
 
-export const mockGetResponseVideo = (): VideoResponse => ({
-  id: {
-    videoId: faker.datatype.uuid()
-  },
+export const mockGetResponseVideo = (): VideoByUrlResponse => ({
+  id: faker.datatype.uuid(),
   snippet: {
     title: faker.lorem.words(),
     thumbnails: {
@@ -32,20 +30,20 @@ export const mockGetResponseVideo = (): VideoResponse => ({
   }
 });
 
-export const mockGetResponse = (): GetSearchVideosResponse => {
+export const mockGetResponse = (): GetSearchVideoByUrlResponse => {
   const items = [mockGetResponseVideo(), mockGetResponseVideo()];
 
   return { items };
 };
 
-export const mockResponse = (response: GetSearchVideosResponse): SearchVideosResponse => {
-  const videos = response.items.map((video) => ({
-    id: video.id.videoId,
+export const mockResponse = (response: GetSearchVideoByUrlResponse): SearchVideoByUrlResponse => {
+  const video = response.items.map((video) => ({
+    id: video.id,
     title: video.snippet.title,
     channelTitle: video.snippet.channelTitle,
     thumbnails: video.snippet.thumbnails,
     publishedAt: getFormattedDateString(video.snippet.publishedAt)
-  }));
+  }))[0];
 
-  return { videos };
+  return { video };
 };

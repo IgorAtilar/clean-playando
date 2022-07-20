@@ -6,7 +6,9 @@ import { SearchBar, SearchBarProps } from '.';
 describe('Presentation: Components/SearchBar', () => {
   const defaultProps: SearchBarProps = {
     placeholder: 'placeholder-test',
-    onSubmit: () => {}
+    onAdd: () => {},
+    onInputChange: () => {},
+    onSearch: () => {}
   };
 
   it('should show the button with the text "Buscar" if searchBarType prop is "search" or not defined', () => {
@@ -29,7 +31,7 @@ describe('Presentation: Components/SearchBar', () => {
       const user = userEvent.setup();
       const handler = jest.fn();
       const text = faker.lorem.words();
-      render(<SearchBar {...defaultProps} onSubmit={handler} />);
+      render(<SearchBar {...defaultProps} onSearch={handler} />);
       const input = screen.getByPlaceholderText(defaultProps.placeholder);
       const button = screen.getByRole('button');
       await user.type(input, text);
@@ -41,7 +43,7 @@ describe('Presentation: Components/SearchBar', () => {
       const user = userEvent.setup();
       const handler = jest.fn();
       const text = faker.lorem.words();
-      render(<SearchBar {...defaultProps} onSubmit={handler} />);
+      render(<SearchBar {...defaultProps} onSearch={handler} />);
       const input = screen.getByPlaceholderText(defaultProps.placeholder);
       await user.type(input, `${text}{enter}`);
       expect(handler).toHaveBeenCalledWith(text);
