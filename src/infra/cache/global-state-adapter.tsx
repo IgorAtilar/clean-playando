@@ -6,6 +6,7 @@ import { FilterPlaylistOnGlobalState } from '@/data/protocols/cache/filter-playl
 import { RemoveFromPlaylistGlobalState } from '@/data/protocols/cache/remove-from-playlist-global-state';
 import { RemoveFilterOnPlaylistOnGlobalState } from '@/data/protocols/cache/remove-filter-on-playlist-on-global-state';
 import { Video } from '@/domain/models/video-model';
+import { PersistentStorageAdapter } from './persistent-storage-adapter';
 
 type GlobalStateData = {
   addToPlaylistState(value: Video): void;
@@ -21,10 +22,18 @@ export const GlobalStateContext = createContext<GlobalStateData>({} as GlobalSta
 
 export const useGlobalState = (): GlobalStateData => useContext(GlobalStateContext);
 
+const persistentStorage = new PersistentStorageAdapter();
+
+const PLAYLIST_PERSISTENT_KEY = '@playando:playlist';
+
 export function GlobalStateProvider({ children }: GlobalStateProps) {
-  const playlistRef = useRef<Video[]>();
-  const [playlistState, setPlaylistState] = useState<Video[]>([]);
+  const playlistStateRef = useRef<Video[]>();
+  const [playlistState, setPlaylistState] = useState<Video[]>(() =>
+    persistentStorage.get(PLAYLIST_PERSISTENT_KEY)
+  );
   const [filteredPlaylistState, setFilteredPlaylistState] = useState<Video[]>(playlistState);
+
+  const prevPlaylistStateValue = playlistStateRef.current ?? playlistState;
 
   const addToPlaylistState = (video: Video) => {
     if (playlistState.find((value) => value.id === video.id)) return;
@@ -38,20 +47,29 @@ export function GlobalStateProvider({ children }: GlobalStateProps) {
 
   const filterPlaylistState = (pattern: string) => {
     const searchArray = pattern.toLowerCase().split(' ');
-    const filteredPlaylist = (playlistRef.current || []).filter((video) =>
+    const filteredPlaylist = (playlistStateRef.current || []).filter((video) =>
       searchArray.every((word) => video.title.toLowerCase().includes(word))
     );
     setFilteredPlaylistState(filteredPlaylist);
   };
 
   const removeFilterOnPlaylistState = () => {
-    setFilteredPlaylistState(playlistRef.current || []);
+    setFilteredPlaylistState(playlistStateRef.current || []);
   };
 
   useEffect(() => {
-    playlistRef.current = playlistState;
+    playlistStateRef.current = playlistState;
+  });
+
+  useEffect(() => {
     setFilteredPlaylistState(playlistState);
   }, [playlistState]);
+
+  useEffect(() => {
+    if (prevPlaylistStateValue !== playlistState) {
+      persistentStorage.set(PLAYLIST_PERSISTENT_KEY, playlistState);
+    }
+  }, [playlistState, prevPlaylistStateValue]);
 
   return (
     <GlobalStateContext.Provider
