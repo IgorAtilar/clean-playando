@@ -4,17 +4,28 @@ import {
   FilterPlaylistOnGlobalState,
   GetPlaylistFromGlobalState,
   RemoveFilterOnPlaylistOnGlobalState,
-  RemoveFromPlaylistGlobalState
+  RemoveFromPlaylistGlobalState,
+  AddSearchCacheOnGlobalState,
+  GetSearchCacheOnGlobalState
 } from '../protocols/cache/global-state';
 
 export class GlobalStateMock
   implements
+    AddToPlaylistGlobalState,
     FilterPlaylistOnGlobalState,
     GetPlaylistFromGlobalState,
     RemoveFilterOnPlaylistOnGlobalState,
-    RemoveFromPlaylistGlobalState
+    RemoveFromPlaylistGlobalState,
+    AddSearchCacheOnGlobalState,
+    GetSearchCacheOnGlobalState
 {
   value: any;
+
+  getSearchCacheOnGlobalState(search: string): Video[] {
+    return [];
+  }
+
+  addToSearchCache(search: string, videos: Video[]): void {}
 
   removeFromPlaylist(id: string): void {}
 

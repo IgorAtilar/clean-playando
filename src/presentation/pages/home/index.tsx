@@ -48,7 +48,7 @@ export function Home({
   filterPlaylist,
   removeFilterOnPlaylist
 }: HomeProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>();
   const [videos, setVideos] = useState<Video[]>();
   const [videoPlayingId, setVideoPlayingId] = useState<string>('');
@@ -58,9 +58,9 @@ export function Home({
 
   const playlistVideos = playlist.get();
 
-  const handleSubmit = async (value?: string) => {
+  const handleSearch = async (value?: string) => {
     if (!value) return;
-    setIsOpen(true);
+    setIsModalOpen(true);
     setIsSearchLoading(true);
 
     const { videos, errorMessage } = await searchVideos.search({
@@ -75,6 +75,7 @@ export function Home({
 
   const handleSaveVideo = (video: Video) => {
     saveVideo.save(video);
+    setIsModalOpen(false);
   };
 
   const handleSaveVideoByUrl = async (videoUrl: string) => {
@@ -112,11 +113,11 @@ export function Home({
   };
 
   return (
-    <Container style={getMainContainerStyle(true)}>
+    <Container style={getMainContainerStyle(isModalOpen)}>
       <Logo />
       <SearchBar
         placeholder="Insira o link ou título do vídeo"
-        onSearch={handleSubmit}
+        onSearch={handleSearch}
         searchBarType={searchBarType}
         onAdd={handleSaveVideoByUrl}
         onInputChange={handleSearchBarInputChange}
@@ -128,8 +129,8 @@ export function Home({
         onClear={handleRemoveFilterOnPlaylist}
       />
       <SearchVideosModal
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
         errorMessage={errorMessage}
         videos={videos}
         onAdd={handleSaveVideo}

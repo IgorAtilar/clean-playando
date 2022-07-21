@@ -6,11 +6,16 @@ import {
   GetPlaylistFromGlobalState,
   FilterPlaylistOnGlobalState,
   RemoveFromPlaylistGlobalState,
-  RemoveFilterOnPlaylistOnGlobalState
+  RemoveFilterOnPlaylistOnGlobalState,
+  GetSearchCacheOnGlobalState,
+  AddSearchCacheOnGlobalState
 } from '@/data/protocols/cache/global-state';
-import { PersistentStorageAdapter } from '../persistent-storage-adapter';
+
+export type SearchCacheState = Record<string, Video[]>;
 
 type GlobalStateData = {
+  addToSearchCacheState(search: string, videos: Video[]): void;
+  searchCacheState: SearchCacheState;
   addToPlaylistState(value: Video): void;
   removeFromPlaylistState(id: string): void;
   filterPlaylistState(pattern: string): void;
@@ -30,11 +35,19 @@ export function GlobalStateProvider({ children, playlistOnStorage = [] }: Global
   const playlistStateRef = useRef<Video[]>();
   const [playlistState, setPlaylistState] = useState<Video[]>(playlistOnStorage);
   const [filteredPlaylistState, setFilteredPlaylistState] = useState<Video[]>(playlistState);
+  const [searchCacheState, setSearchCacheState] = useState<SearchCacheState>({});
 
   const addToPlaylistState = (video: Video) => {
     if (playlistState.find((value) => value.id === video.id)) return;
 
     setPlaylistState((prevVideos) => [...prevVideos, video]);
+  };
+
+  const addToSearchCacheState = (search: string, videos: Video[]) => {
+    setSearchCacheState((prevValue) => ({
+      ...prevValue,
+      [search]: videos
+    }));
   };
 
   const removeFromPlaylistState = (id: string) => {
@@ -66,21 +79,24 @@ export function GlobalStateProvider({ children, playlistOnStorage = [] }: Global
         playlistState: filteredPlaylistState,
         removeFromPlaylistState,
         filterPlaylistState,
-        removeFilterOnPlaylistState
+        removeFilterOnPlaylistState,
+        addToSearchCacheState,
+        searchCacheState
       }}>
       {children}
     </GlobalStateContext.Provider>
   );
 }
 
-// !TODO: split global state adapter to each case
 export class GlobalStateAdapter
   implements
     AddToPlaylistGlobalState,
     GetPlaylistFromGlobalState,
     RemoveFromPlaylistGlobalState,
     FilterPlaylistOnGlobalState,
-    RemoveFilterOnPlaylistOnGlobalState
+    RemoveFilterOnPlaylistOnGlobalState,
+    GetSearchCacheOnGlobalState,
+    AddSearchCacheOnGlobalState
 {
   constructor(
     private readonly params?: {
@@ -88,9 +104,19 @@ export class GlobalStateAdapter
       removeFromPlaylistState?: (id: string) => void;
       filterPlaylistState?: (pattern: string) => void;
       removeFilterOnPlaylistState?: () => void;
+      addToSearchCacheState?: (search: string, videos: Video[]) => void;
+      searchCacheState?: SearchCacheState;
       playlistState?: Video[];
     }
   ) {}
+
+  addToSearchCache(search: string, videos: Video[]): void {
+    this.params.addToSearchCacheState(search, videos);
+  }
+
+  getSearchCacheOnGlobalState(search: string): Video[] {
+    return this.params.searchCacheState[search] || [];
+  }
 
   addToPlaylist(value: Video): void {
     this.params?.addToPlaylistState?.(value);

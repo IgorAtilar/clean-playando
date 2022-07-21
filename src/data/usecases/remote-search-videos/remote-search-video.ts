@@ -6,6 +6,7 @@ import {
   SearchVideosParams,
   SearchVideosResponse
 } from '@/domain/usecases/search-videos';
+import { GlobalStateAdapter } from '@/infra/cache/global-state-adapter';
 import { getFormattedDateString } from '@/utils/date';
 
 export type GetSearchVideosResponse = {
@@ -15,10 +16,17 @@ export type GetSearchVideosResponse = {
 export class RemoteSearchVideo implements SearchVideos {
   constructor(
     private readonly url: string,
-    private readonly httpGetClient: HttpGetClient<SearchVideosParams, GetSearchVideosResponse>
+    private readonly httpGetClient: HttpGetClient<SearchVideosParams, GetSearchVideosResponse>,
+    private readonly globalState: GlobalStateAdapter
   ) {}
 
   async search(params: SearchVideosParams): Promise<SearchVideosResponse> {
+    const search = params.q;
+
+    const searchCachedVideos = this.globalState.getSearchCacheOnGlobalState(search);
+
+    if (searchCachedVideos.length) return { videos: searchCachedVideos };
+
     const { statusCode, data } = await this.httpGetClient.get({
       url: this.url,
       params
@@ -41,6 +49,8 @@ export class RemoteSearchVideo implements SearchVideos {
       thumbnails: item.snippet.thumbnails,
       publishedAt: getFormattedDateString(item.snippet.publishedAt)
     }));
+
+    this.globalState.addToSearchCache(search, videos);
 
     return { videos };
   }
