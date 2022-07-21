@@ -1,3 +1,3 @@
-export interface SetPersistentStorage {
-  set(key: string, value: any): void;
+export interface SetPersistentStorage<T> {
+  set(key: string, value: T[]): void;
 }

@@ -1,3 +1,3 @@
-export interface GetFromPersistentStorage {
-  get(key: string): any;
+export interface GetFromPersistentStorage<T> {
+  get(key: string): T[];
 }

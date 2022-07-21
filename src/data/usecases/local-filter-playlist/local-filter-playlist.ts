@@ -1,10 +1,10 @@
 import { FilterPlaylist } from '@/domain/usecases/filter-playlist';
-import { FilterPlaylistOnGlobalState } from '@/data/protocols/cache/global-state';
+import { GlobalStateAdapter } from '@/infra/cache/global-state-adapter';
 
 export class LocalFilterPlaylist implements FilterPlaylist {
-  constructor(private readonly filterPlaylistOnGlobalState: FilterPlaylistOnGlobalState) {}
+  constructor(private readonly globalState: GlobalStateAdapter) {}
 
   filter(pattern: string): void {
-    this.filterPlaylistOnGlobalState.filterPlaylist(pattern);
+    this.globalState.filterPlaylist(pattern);
   }
 }

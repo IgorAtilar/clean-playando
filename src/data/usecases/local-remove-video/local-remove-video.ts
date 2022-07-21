@@ -1,10 +1,15 @@
-import { RemoveFromPlaylistGlobalState } from '@/data/protocols/cache/global-state';
 import { RemoveVideo } from '@/domain/usecases/remove-video';
+import { RemoveVideoOnStorage } from '@/domain/usecases/remove-video-on-storage';
+import { GlobalStateAdapter } from '@/infra/cache/global-state-adapter';
 
 export class LocalRemoveVideo implements RemoveVideo {
-  constructor(private readonly removeFromPlaylistGlobalState: RemoveFromPlaylistGlobalState) {}
+  constructor(
+    private readonly globalState: GlobalStateAdapter,
+    private readonly persistentStorage: RemoveVideoOnStorage
+  ) {}
 
   remove(id: string): void {
-    this.removeFromPlaylistGlobalState.removeFromPlaylist(id);
+    this.globalState.removeFromPlaylist(id);
+    this.persistentStorage.remove(id);
   }
 }

@@ -18,24 +18,18 @@ type GlobalStateData = {
   playlistState: Video[];
 };
 
-type GlobalStateProps = PropsWithChildren;
+type GlobalStateProps = PropsWithChildren & {
+  playlistOnStorage?: Video[];
+};
 
 export const GlobalStateContext = createContext<GlobalStateData>({} as GlobalStateData);
 
 export const useGlobalState = (): GlobalStateData => useContext(GlobalStateContext);
 
-const persistentStorage = new PersistentStorageAdapter();
-
-const PLAYLIST_PERSISTENT_KEY = '@playando:playlist';
-
-export function GlobalStateProvider({ children }: GlobalStateProps) {
+export function GlobalStateProvider({ children, playlistOnStorage = [] }: GlobalStateProps) {
   const playlistStateRef = useRef<Video[]>();
-  const [playlistState, setPlaylistState] = useState<Video[]>(() =>
-    persistentStorage.get(PLAYLIST_PERSISTENT_KEY)
-  );
+  const [playlistState, setPlaylistState] = useState<Video[]>(playlistOnStorage);
   const [filteredPlaylistState, setFilteredPlaylistState] = useState<Video[]>(playlistState);
-
-  const prevPlaylistStateValue = playlistStateRef.current ?? playlistState;
 
   const addToPlaylistState = (video: Video) => {
     if (playlistState.find((value) => value.id === video.id)) return;
@@ -61,17 +55,9 @@ export function GlobalStateProvider({ children }: GlobalStateProps) {
 
   useEffect(() => {
     playlistStateRef.current = playlistState;
-  });
 
-  useEffect(() => {
     setFilteredPlaylistState(playlistState);
   }, [playlistState]);
-
-  useEffect(() => {
-    if (prevPlaylistStateValue !== playlistState) {
-      persistentStorage.set(PLAYLIST_PERSISTENT_KEY, playlistState);
-    }
-  }, [playlistState, prevPlaylistStateValue]);
 
   return (
     <GlobalStateContext.Provider

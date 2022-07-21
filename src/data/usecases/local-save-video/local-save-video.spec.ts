@@ -1,27 +1,29 @@
-import { AddGlobalStateMock } from '@/data/test/mock-global-state';
+import { GlobalStateMock } from '@/data/test/mock-global-state';
+import { PersistentStorageMock } from '@/data/test/mock-persistent-storage';
 import { mockVideo } from '@/presentation/test/mock-video';
 import { LocalSaveVideo } from './local-save-video';
 
 type SutTypes = {
   sut: LocalSaveVideo;
-  addToGlobalStateMock: AddGlobalStateMock;
+  globalStateMock: GlobalStateMock;
 };
 
 const makeSut = (): SutTypes => {
-  const addToGlobalStateMock = new AddGlobalStateMock();
-  const sut = new LocalSaveVideo(addToGlobalStateMock);
+  const globalStateMock = new GlobalStateMock();
+  const persistentStorageMock = new PersistentStorageMock();
+  const sut = new LocalSaveVideo(globalStateMock, persistentStorageMock);
 
   return {
-    addToGlobalStateMock,
+    globalStateMock,
     sut
   };
 };
 
 describe('Data: LocalSaveVideo', () => {
   it('should call AddToGlobalState with the correct value', () => {
-    const { addToGlobalStateMock: addGlobalStateMock, sut } = makeSut();
+    const { globalStateMock, sut } = makeSut();
     const video = mockVideo();
     sut.save(video);
-    expect(addGlobalStateMock.value).toStrictEqual([video]);
+    expect(globalStateMock.value).toStrictEqual([video]);
   });
 });
