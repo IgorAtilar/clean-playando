@@ -8,7 +8,7 @@ export const StyledInput = styled.input`
   caret-color: ${({ theme }) => theme.colors.primary};
   background-color: ${({ theme }) => theme.colors.gray700};
   color: ${({ theme }) => theme.colors.gray100};
-  border: none;
+  border: 1px solid transparent;
 
   ::placeholder {
     color: ${({ theme }) => theme.colors.gray500};
@@ -24,6 +24,6 @@ export const StyledInput = styled.input`
   }
 
   :focus {
-    border: 1px solid ${({ theme }) => theme.colors.white};
+    border: 1px solid ${({ theme }) => theme.colors.gray100};
   }
 `;

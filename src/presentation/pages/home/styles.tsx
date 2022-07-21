@@ -25,12 +25,12 @@ export const Logo = styled(BaseLogo)`
 `;
 
 export const SearchBar = styled(BaseSearchBar)`
-  padding-bottom: 12px;
+  padding-bottom: 16px;
   border-bottom: 1px solid ${({ theme }) => theme.colors.gray500};
 `;
 
 export const FilterBar = styled(BaseFilterBar)`
-  margin-top: 12px;
+  margin-top: 16px;
   margin-bottom: 32px;
 `;
 

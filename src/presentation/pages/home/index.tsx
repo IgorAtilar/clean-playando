@@ -19,6 +19,7 @@ import {
   PlaylistContainer,
   SearchBar
 } from './styles';
+import { EmptyState } from '@/presentation/components/EmptyState';
 
 export type HomeProps = {
   searchVideos: SearchVideos;
@@ -37,6 +38,12 @@ const getMainContainerStyle = (isModalOpen?: boolean) => {
     [MAIN_CONTAINER_OVERFLOW]: 'hidden',
     [MAIN_CONTAINER_POSITION]: 'fixed'
   } as CSSProperties;
+};
+
+const getEmptyStateText = (isFilteringThePlaylist: boolean) => {
+  if (isFilteringThePlaylist) return 'Nenhum vídeo encontrado :(';
+
+  return 'Adicione um vídeo na sua playlist e ele aparecerá aqui :D';
 };
 
 export function Home({
@@ -112,6 +119,10 @@ export function Home({
     setFilterBarType('filter');
   };
 
+  const hasPlaylistVideos = playlistVideos.length > 0;
+
+  const isFilteringThePlaylist = filterBarType === 'clear';
+
   return (
     <Container style={getMainContainerStyle(isModalOpen)}>
       <Logo />
@@ -136,17 +147,22 @@ export function Home({
         onAdd={handleSaveVideo}
         isLoading={isSearchLoading}
       />
-      <PlaylistContainer>
-        {playlistVideos.map((video) => (
-          <Player
-            key={video.id}
-            isPlaying={video.id === videoPlayingId}
-            video={video}
-            togglePlay={handleTogglePlay}
-            onRemove={handleRemoveVideo}
-          />
-        ))}
-      </PlaylistContainer>
+      {hasPlaylistVideos ? (
+        <PlaylistContainer>
+          {playlistVideos.map((video, index) => (
+            <Player
+              position={String(index + 1)}
+              key={video.id}
+              isPlaying={video.id === videoPlayingId}
+              video={video}
+              togglePlay={handleTogglePlay}
+              onRemove={handleRemoveVideo}
+            />
+          ))}
+        </PlaylistContainer>
+      ) : (
+        <EmptyState text={getEmptyStateText(isFilteringThePlaylist)} />
+      )}
     </Container>
   );
 }

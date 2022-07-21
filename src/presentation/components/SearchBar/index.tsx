@@ -29,26 +29,27 @@ export function SearchBar({
 }: SearchBarProps) {
   const inputRef = useRef<HTMLInputElement>();
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const { value } = inputRef.current;
-    onSearch(value);
-    inputRef.current.value = '';
-    inputRef.current.blur();
-  };
-
   const handleSearch = () => {
     const { value } = inputRef.current;
     onSearch(value);
     inputRef.current.value = '';
-    inputRef.current.blur();
+    return inputRef.current.blur();
   };
 
   const handleAdd = () => {
     const { value } = inputRef.current;
     onAdd(value);
     inputRef.current.value = '';
-    inputRef.current.blur();
+    return inputRef.current.blur();
+  };
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (searchBarType === 'add') return handleAdd();
+    const { value } = inputRef.current;
+    onSearch(value);
+    inputRef.current.value = '';
+    return inputRef.current.blur();
   };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {

@@ -53,6 +53,10 @@ export const InfoContainer = styled.div`
   gap: 8px;
 
   strong {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
     font-size: 16px;
     color: ${({ theme }) => theme.colors.primary};
   }
