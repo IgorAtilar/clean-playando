@@ -1,3 +1,6 @@
 import styled from 'styled-components';
 
-export const LogoImage = styled.img``;
+export const Container = styled.div`
+  font-size: 32px;
+  color: ${({ theme }) => theme.colors.gray400};
+`;

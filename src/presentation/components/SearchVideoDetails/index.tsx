@@ -7,11 +7,8 @@ import {
   Image,
   InfoContainer,
   SearchVideoDetailsContainer,
-  IMAGE_HEIGHT_DEFAULT,
-  IMAGE_WIDTH_DEFAULT,
   IMAGE_HEIGHT_MEDIUM,
   IMAGE_WIDTH_MEDIUM,
-  IMAGE_URL_DEFAULT,
   IMAGE_URL_MEDIUM
 } from './styles';
 
@@ -25,11 +22,8 @@ export function SearchVideoDetails({ video, onAdd, className }: SearchVideoDetai
   const { channelTitle, publishedAt, thumbnails, title } = video;
 
   const imageStyle = {
-    [IMAGE_HEIGHT_DEFAULT]: `${thumbnails.default.height}px`,
-    [IMAGE_WIDTH_DEFAULT]: `${thumbnails.default.width}px`,
     [IMAGE_HEIGHT_MEDIUM]: `${thumbnails.medium.height - 48}px`,
     [IMAGE_WIDTH_MEDIUM]: `${thumbnails.medium.width - 48}px`,
-    [IMAGE_URL_DEFAULT]: `url(${thumbnails.default.url})`,
     [IMAGE_URL_MEDIUM]: `url(${thumbnails.medium.url})`
   } as CSSProperties;
 

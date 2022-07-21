@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { CSSProperties, useState } from 'react';
 import { SearchVideos } from '@/domain/usecases/search-videos';
 import { Video } from '@/domain/models/video-model';
 import { SaveVideo } from '@/domain/usecases/save-video';
@@ -10,7 +10,15 @@ import { SearchVideoByUrl } from '@/domain/usecases/search-video-by-url';
 import { SearchVideosModal, Player, FilterBarType, SearchBarType } from '@/presentation/components';
 import { isYoutubeVideoUrl } from '@/services/youtube';
 
-import { Container, FilterBar, Logo, PlaylistContainer, SearchBar } from './styles';
+import {
+  Container,
+  FilterBar,
+  Logo,
+  MAIN_CONTAINER_OVERFLOW,
+  MAIN_CONTAINER_POSITION,
+  PlaylistContainer,
+  SearchBar
+} from './styles';
 
 export type HomeProps = {
   searchVideos: SearchVideos;
@@ -20,6 +28,15 @@ export type HomeProps = {
   removeVideo: RemoveVideo;
   filterPlaylist: FilterPlaylist;
   removeFilterOnPlaylist: RemoveFilterOnPlaylist;
+};
+
+const getMainContainerStyle = (isModalOpen?: boolean) => {
+  if (!isModalOpen) return {};
+
+  return {
+    [MAIN_CONTAINER_OVERFLOW]: 'hidden',
+    [MAIN_CONTAINER_POSITION]: 'fixed'
+  } as CSSProperties;
 };
 
 export function Home({
@@ -95,7 +112,7 @@ export function Home({
   };
 
   return (
-    <Container>
+    <Container style={getMainContainerStyle(true)}>
       <Logo />
       <SearchBar
         placeholder="Insira o link ou título do vídeo"

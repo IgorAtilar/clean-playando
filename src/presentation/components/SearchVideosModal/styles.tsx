@@ -3,11 +3,16 @@ import styled from 'styled-components';
 export const ModalContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 90%;
-  height: 90%;
+  width: 100%;
+  height: 100%;
   border-radius: 4px;
   background: ${({ theme }) => theme.colors.gray700};
   padding: 20px;
+
+  @media (min-width: 768px) {
+    width: 90%;
+    height: 90%;
+  }
 `;
 
 export const ModalHeader = styled.div`
@@ -45,8 +50,8 @@ export const InfoContentContainer = styled.div`
 export const SearchVideoDetailsContainer = styled.div`
   display: flex;
   flex-direction: column;
-  overflow-x: hidden;
   padding: 16px;
+  overflow-x: hidden;
   gap: 8px;
 `;
 
