@@ -1,4 +1,5 @@
 import { Video } from '@/domain/models/video-model';
+import { SaveVideoResponse } from '@/domain/usecases/save-video';
 import {
   AddToPlaylistGlobalState,
   FilterPlaylistOnGlobalState,
@@ -37,7 +38,9 @@ export class GlobalStateMock
 
   filterPlaylist(pattern: string): void {}
 
-  addToPlaylist(value: Video): void {
+  addToPlaylist(value: Video): SaveVideoResponse {
     this.value = [...(this.value || []), value];
+
+    return {};
   }
 }

@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-no-constructed-context-values */
 import { createContext, PropsWithChildren, useContext, useEffect, useRef, useState } from 'react';
 import { Video } from '@/domain/models/video-model';
+import { SaveVideoResponse } from '@/domain/usecases/save-video';
 import {
   AddToPlaylistGlobalState,
   GetPlaylistFromGlobalState,
@@ -16,7 +17,7 @@ export type SearchCacheState = Record<string, Video[]>;
 type GlobalStateData = {
   addToSearchCacheState(search: string, videos: Video[]): void;
   searchCacheState: SearchCacheState;
-  addToPlaylistState(value: Video): void;
+  addToPlaylistState(value: Video): SaveVideoResponse;
   removeFromPlaylistState(id: string): void;
   filterPlaylistState(pattern: string): void;
   removeFilterOnPlaylistState(): void;
@@ -37,10 +38,17 @@ export function GlobalStateProvider({ children, playlistOnStorage = [] }: Global
   const [filteredPlaylistState, setFilteredPlaylistState] = useState<Video[]>(playlistState);
   const [searchCacheState, setSearchCacheState] = useState<SearchCacheState>({});
 
-  const addToPlaylistState = (video: Video) => {
-    if (playlistState.find((value) => value.id === video.id)) return;
+  const addToPlaylistState = (video: Video): SaveVideoResponse => {
+    if (playlistState.find((value) => value.id === video.id))
+      return {
+        errorMessage: 'Oops! Esse vídeo já está adicionado na sua playlist.'
+      };
 
     setPlaylistState((prevVideos) => [...prevVideos, video]);
+
+    return {
+      success: 'Vídeo adicionado com sucesso :D'
+    };
   };
 
   const addToSearchCacheState = (search: string, videos: Video[]) => {
@@ -100,7 +108,7 @@ export class GlobalStateAdapter
 {
   constructor(
     private readonly params?: {
-      addToPlaylistState?: (value: Video) => void;
+      addToPlaylistState?: (value: Video) => SaveVideoResponse;
       removeFromPlaylistState?: (id: string) => void;
       filterPlaylistState?: (pattern: string) => void;
       removeFilterOnPlaylistState?: () => void;
@@ -118,8 +126,8 @@ export class GlobalStateAdapter
     return this.params.searchCacheState[search] || [];
   }
 
-  addToPlaylist(value: Video): void {
-    this.params?.addToPlaylistState?.(value);
+  addToPlaylist(value: Video): SaveVideoResponse {
+    return this.params?.addToPlaylistState?.(value);
   }
 
   getPlaylist(): Video[] {
