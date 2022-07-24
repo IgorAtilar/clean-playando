@@ -17,6 +17,7 @@ export type ToastProps = {
   text: string;
   type?: ToastType;
   closeToast: () => void;
+  autoCloseDelay?: number;
 };
 
 const mapTypeToToastContainer = {
@@ -24,7 +25,7 @@ const mapTypeToToastContainer = {
   error: ToastErrorContainer
 };
 
-export function Toast({ isOpen, text, type = 'success', closeToast }: ToastProps) {
+export function Toast({ isOpen, text, type = 'success', closeToast, autoCloseDelay }: ToastProps) {
   let timeout;
 
   if (!toastRoot) {
@@ -38,12 +39,12 @@ export function Toast({ isOpen, text, type = 'success', closeToast }: ToastProps
   if (!isOpen) return null;
 
   useEffect(() => {
-    if (!timeout) {
-      timeout = setTimeout(closeToast, 1500);
+    if (!timeout && autoCloseDelay) {
+      timeout = setTimeout(closeToast, autoCloseDelay);
     }
 
     return () => {
-      if (timeout) {
+      if (timeout && autoCloseDelay) {
         clearTimeout(timeout);
       }
     };
