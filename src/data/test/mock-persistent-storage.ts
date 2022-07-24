@@ -1,10 +1,21 @@
 import { Video } from '@/domain/models/video-model';
-import { SaveVideoOnStorage } from '@/domain/usecases/save-video-on-storage';
+import {
+  GetFromPersistentStorage,
+  SetPersistentStorage
+} from '../protocols/cache/persistent-storage';
 
-export class PersistentStorageMock implements SaveVideoOnStorage {
-  value: any;
+export type PersistentStorageMockStorage<T> = Record<string, T[]>;
 
-  save(video: Video) {
-    this.value = [...(this.value || []), video];
+export class PersistentStorageMock<T>
+  implements GetFromPersistentStorage<T>, SetPersistentStorage<T>
+{
+  storage: PersistentStorageMockStorage<T> = {};
+
+  get(key: string): T[] {
+    return this.storage[key] || [];
+  }
+
+  set(key: string, value: T[]): void {
+    this.storage[key] = value;
   }
 }

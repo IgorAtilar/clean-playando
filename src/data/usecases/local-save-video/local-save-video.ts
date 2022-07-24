@@ -6,11 +6,11 @@ import { GlobalStateAdapter } from '@/infra/cache/global-state-adapter';
 export class LocalSaveVideo implements SaveVideo {
   constructor(
     private readonly globalState: GlobalStateAdapter,
-    private readonly persistentStorage: SaveVideoOnStorage
+    private readonly saveVideoOnStorage: SaveVideoOnStorage
   ) {}
 
   save(video: Video): SaveVideoResponse {
-    this.persistentStorage.save(video);
+    this.saveVideoOnStorage.save(video);
     return this.globalState.addToPlaylist(video);
   }
 }
