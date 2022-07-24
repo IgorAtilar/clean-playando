@@ -1,4 +1,4 @@
-import { CSSProperties, useState } from 'react';
+import { CSSProperties, useReducer } from 'react';
 import { SearchVideos } from '@/domain/usecases/search-videos';
 import { Video } from '@/domain/models/video-model';
 import { SaveVideo } from '@/domain/usecases/save-video';
@@ -47,17 +47,132 @@ const getEmptyStateText = (isFilteringThePlaylist: boolean) => {
   return 'Adicione um vídeo na sua playlist e ele aparecerá aqui :D';
 };
 
-export type State = {
+export type HomeState = {
   isModalOpen: boolean;
   isToastOpen: boolean;
   toastType: ToastType;
   toastText: string;
-  errorMessage: string;
+  modalErrorMessage: string;
   videos: Video[];
   videoPlayingId: string;
   isSearchLoading: boolean;
   filterBarType: FilterBarType;
   searchBarType: SearchBarType;
+};
+
+export enum HomeActionKind {
+  SET_IS_MODAL_OPEN = 'set_is_modal_open',
+  SET_IS_TOAST_OPEN = 'set_is_toast_open',
+  SET_TOAST_TYPE = 'set_toast_type',
+  SET_TOAST_TEXT = 'set_toast_text',
+  SET_MODAL_ERROR_MESSAGE = 'set_modal_error_message',
+  SET_VIDEOS = 'set_videos',
+  SET_VIDEO_PLAYING_ID = 'set_video_playing_id',
+  SET_IS_SEARCH_LOADING = 'set_is_search_loading',
+  SET_FILTER_BAR_TYPE = 'set_filter_bar_type',
+  SET_SEARCH_BAR_TYPE = 'set_search_bar_type'
+}
+
+export type HomeAction =
+  | { type: HomeActionKind.SET_IS_MODAL_OPEN; isModalOpen: boolean }
+  | { type: HomeActionKind.SET_IS_TOAST_OPEN; isToastOpen: boolean }
+  | { type: HomeActionKind.SET_TOAST_TYPE; toastType: ToastType }
+  | { type: HomeActionKind.SET_TOAST_TEXT; toastText: string }
+  | { type: HomeActionKind.SET_MODAL_ERROR_MESSAGE; modalErrorMessage: string }
+  | { type: HomeActionKind.SET_VIDEOS; videos: Video[] }
+  | { type: HomeActionKind.SET_VIDEO_PLAYING_ID; videoPlayingId: string }
+  | { type: HomeActionKind.SET_IS_SEARCH_LOADING; isSearchLoading: boolean }
+  | { type: HomeActionKind.SET_FILTER_BAR_TYPE; filterBarType: FilterBarType }
+  | { type: HomeActionKind.SET_SEARCH_BAR_TYPE; searchBarType: SearchBarType };
+
+const homeStateReducer = (state: HomeState, action: HomeAction): HomeState => {
+  switch (action.type) {
+    case HomeActionKind.SET_IS_MODAL_OPEN: {
+      const { isModalOpen } = action;
+      return {
+        ...state,
+        isModalOpen
+      };
+    }
+    case HomeActionKind.SET_IS_TOAST_OPEN: {
+      const { isToastOpen } = action;
+      return {
+        ...state,
+        isToastOpen
+      };
+    }
+    case HomeActionKind.SET_TOAST_TYPE: {
+      const { toastType } = action;
+      return {
+        ...state,
+        toastType
+      };
+    }
+    case HomeActionKind.SET_TOAST_TEXT: {
+      const { toastText } = action;
+      return {
+        ...state,
+        toastText
+      };
+    }
+    case HomeActionKind.SET_MODAL_ERROR_MESSAGE: {
+      const { modalErrorMessage } = action;
+      return {
+        ...state,
+        modalErrorMessage
+      };
+    }
+    case HomeActionKind.SET_VIDEOS: {
+      const { videos } = action;
+      return {
+        ...state,
+        videos
+      };
+    }
+    case HomeActionKind.SET_VIDEO_PLAYING_ID: {
+      const { videoPlayingId } = action;
+      return {
+        ...state,
+        videoPlayingId
+      };
+    }
+    case HomeActionKind.SET_IS_SEARCH_LOADING: {
+      const { isSearchLoading } = action;
+      return {
+        ...state,
+        isSearchLoading
+      };
+    }
+    case HomeActionKind.SET_FILTER_BAR_TYPE: {
+      const { filterBarType } = action;
+      return {
+        ...state,
+        filterBarType
+      };
+    }
+    case HomeActionKind.SET_SEARCH_BAR_TYPE: {
+      const { searchBarType } = action;
+      return {
+        ...state,
+        searchBarType
+      };
+    }
+    default:
+      return state;
+  }
+};
+
+const initialHomeState = {
+  isModalOpen: false,
+  isToastOpen: false,
+  toastType: 'success' as ToastType,
+  toastText: '',
+  modalErrorMessage: '',
+  videos: [],
+  videoPlayingId: '',
+  isSearchLoading: false,
+  filterBarType: 'filter' as FilterBarType,
+  searchBarType: 'search' as SearchBarType
 };
 
 export function Home({
@@ -69,126 +184,158 @@ export function Home({
   filterPlaylist,
   removeFilterOnPlaylist
 }: HomeProps) {
-  const [state, setState] = useState<State>({
-    isModalOpen: false,
-    isToastOpen: false,
-    toastType: 'success',
-    toastText: '',
-    errorMessage: '',
-    videos: [],
-    videoPlayingId: '',
-    isSearchLoading: false,
-    filterBarType: 'filter',
-    searchBarType: 'search'
-  });
+  const [homeState, dispatch] = useReducer(homeStateReducer, initialHomeState);
 
   const {
-    errorMessage,
     filterBarType,
     isModalOpen,
     isSearchLoading,
     isToastOpen,
+    modalErrorMessage,
     searchBarType,
     toastText,
     toastType,
     videoPlayingId,
     videos
-  } = state;
+  } = homeState;
 
   const playlistVideos = playlist.get();
 
   const handleSearch = async (value?: string) => {
     if (!value) return;
-    setState((prevState) => ({
-      ...prevState,
-      isModalOpen: true,
-      isSearchLoading: true
-    }));
 
-    const { videos, errorMessage } = await searchVideos.search({
-      q: value,
+    dispatch({
+      type: HomeActionKind.SET_IS_MODAL_OPEN,
+      isModalOpen: true
+    });
+    dispatch({
+      type: HomeActionKind.SET_IS_SEARCH_LOADING,
+      isSearchLoading: true
+    });
+
+    const { videos, errorMessage: modalErrorMessage } = await searchVideos.search({
+      query: value,
       maxResults: 4
     });
 
-    setState((prevState) => ({
-      ...prevState,
-      videos,
-      errorMessage,
+    dispatch({
+      type: HomeActionKind.SET_VIDEOS,
+      videos
+    });
+
+    dispatch({
+      type: HomeActionKind.SET_MODAL_ERROR_MESSAGE,
+      modalErrorMessage
+    });
+
+    dispatch({
+      type: HomeActionKind.SET_IS_SEARCH_LOADING,
       isSearchLoading: false
-    }));
+    });
   };
 
   const handleSaveVideo = (video: Video) => {
+    if (isToastOpen) {
+      dispatch({
+        type: HomeActionKind.SET_IS_TOAST_OPEN,
+        isToastOpen: false
+      });
+    }
+
     const { errorMessage, success } = saveVideo.save(video);
     const toastType = errorMessage ? 'error' : 'success';
     const toastText = errorMessage || success;
 
-    setState((prevState) => ({
-      ...prevState,
-      toastType,
-      toastText,
+    dispatch({
+      type: HomeActionKind.SET_TOAST_TYPE,
+      toastType
+    });
+    dispatch({
+      type: HomeActionKind.SET_TOAST_TEXT,
+      toastText
+    });
+    dispatch({
+      type: HomeActionKind.SET_IS_TOAST_OPEN,
       isToastOpen: true
-    }));
+    });
   };
 
   const handleSaveVideoByUrl = async (videoUrl: string) => {
     if (!videoUrl) return;
 
-    const { video } = await searchVideoByUrl.search(videoUrl);
+    dispatch({
+      type: HomeActionKind.SET_SEARCH_BAR_TYPE,
+      searchBarType: 'search'
+    });
+
+    const { video, errorMessage, success } = await searchVideoByUrl.search(videoUrl);
+
+    const toastType = errorMessage ? 'error' : 'success';
+    const toastText = errorMessage || success;
+
+    dispatch({
+      type: HomeActionKind.SET_TOAST_TYPE,
+      toastType
+    });
+    dispatch({
+      type: HomeActionKind.SET_TOAST_TEXT,
+      toastText
+    });
+    dispatch({
+      type: HomeActionKind.SET_IS_TOAST_OPEN,
+      isToastOpen: true
+    });
+
+    if (errorMessage) return;
 
     handleSaveVideo(video);
-
-    setState((prevState) => ({
-      ...prevState,
-      searchBarType: 'search'
-    }));
   };
 
   const handleSearchBarInputChange = (value: string) => {
     if (isYoutubeVideoUrl(value))
-      return setState((prevState) => ({
-        ...prevState,
+      return dispatch({
+        type: HomeActionKind.SET_SEARCH_BAR_TYPE,
         searchBarType: 'add'
-      }));
+      });
 
-    return setState((prevState) => ({
-      ...prevState,
+    return dispatch({
+      type: HomeActionKind.SET_SEARCH_BAR_TYPE,
       searchBarType: 'search'
-    }));
+    });
   };
 
   const handleTogglePlay = (id: string) => {
     if (id === videoPlayingId)
-      return setState((prevState) => ({
-        ...prevState,
+      return dispatch({
+        type: HomeActionKind.SET_VIDEO_PLAYING_ID,
         videoPlayingId: ''
-      }));
+      });
 
-    return setState((prevState) => ({
-      ...prevState,
+    return dispatch({
+      type: HomeActionKind.SET_VIDEO_PLAYING_ID,
       videoPlayingId: id
-    }));
+    });
   };
 
   const handleRemoveVideo = (id: string) => removeVideo.remove(id);
 
   const handleFilterPlaylist = (value: string) => {
     filterPlaylist.filter(value);
-    return setState((prevState) => ({
-      ...prevState,
+    return dispatch({
+      type: HomeActionKind.SET_FILTER_BAR_TYPE,
       filterBarType: 'clear'
-    }));
+    });
   };
 
   const handleRemoveFilterOnPlaylist = () => {
     removeFilterOnPlaylist.remove();
-    return setState((prevState) => ({
-      ...prevState,
+    return dispatch({
+      type: HomeActionKind.SET_FILTER_BAR_TYPE,
       filterBarType: 'filter'
-    }));
+    });
   };
 
-  const hasPlaylistVideos = playlistVideos.length > 0;
+  const hasPlaylistVideos = playlistVideos?.length > 0;
 
   const isFilteringThePlaylist = filterBarType === 'clear';
 
@@ -228,12 +375,12 @@ export function Home({
       <SearchVideosModal
         isOpen={isModalOpen}
         onClose={() =>
-          setState((prevState) => ({
-            ...prevState,
+          dispatch({
+            type: HomeActionKind.SET_IS_MODAL_OPEN,
             isModalOpen: false
-          }))
+          })
         }
-        errorMessage={errorMessage}
+        errorMessage={modalErrorMessage}
         videos={videos}
         onAdd={handleSaveVideo}
         isLoading={isSearchLoading}
@@ -243,10 +390,10 @@ export function Home({
         isOpen={isToastOpen}
         type={toastType}
         closeToast={() =>
-          setState((prevState) => ({
-            ...prevState,
+          dispatch({
+            type: HomeActionKind.SET_IS_TOAST_OPEN,
             isToastOpen: false
-          }))
+          })
         }
       />
     </Container>
