@@ -1,12 +1,11 @@
-import { SearchVideosParams } from '@/domain/usecases/search-videos';
 import { HttpGetClientSpy } from '@/data/test/mock-http';
 import { UnexpectedError } from '@/domain/errors/unexpected-error';
 import {
-  RemoteSearchVideo,
+  RemoteSearchVideos,
   GetSearchVideosResponse,
   RawSearchVideoParams
-} from './remote-search-video';
-import { mockGetResponse, mockResponse } from '@/data/test/mock-remote-search-video';
+} from './remote-search-videos';
+import { mockGetResponse, mockResponse } from '@/data/test/mock-remote-search-videos';
 import { GlobalStateMock } from '@/data/test/mock-global-state';
 
 describe('Data: RemoteSearchVideo', () => {
@@ -14,7 +13,7 @@ describe('Data: RemoteSearchVideo', () => {
     const url = 'any_url';
     const globalStateMock = new GlobalStateMock();
     const httpGetClientSpy = new HttpGetClientSpy<RawSearchVideoParams, GetSearchVideosResponse>();
-    const remoteSearchVideo = new RemoteSearchVideo(url, httpGetClientSpy, globalStateMock);
+    const remoteSearchVideo = new RemoteSearchVideos(url, httpGetClientSpy, globalStateMock);
     await remoteSearchVideo.search({ query: 'any_search' });
     expect(httpGetClientSpy.url).toBe(url);
   });
@@ -27,7 +26,7 @@ describe('Data: RemoteSearchVideo', () => {
     };
     const globalStateMock = new GlobalStateMock();
     const httpGetClientSpy = new HttpGetClientSpy<RawSearchVideoParams, GetSearchVideosResponse>();
-    const remoteSearchVideo = new RemoteSearchVideo(url, httpGetClientSpy, globalStateMock);
+    const remoteSearchVideo = new RemoteSearchVideos(url, httpGetClientSpy, globalStateMock);
     await remoteSearchVideo.search(params);
 
     expect(httpGetClientSpy.params).toStrictEqual({
@@ -43,7 +42,7 @@ describe('Data: RemoteSearchVideo', () => {
     httpGetClientSpy.response = {
       statusCode: 400
     };
-    const remoteSearchVideo = new RemoteSearchVideo(url, httpGetClientSpy, globalStateMock);
+    const remoteSearchVideo = new RemoteSearchVideos(url, httpGetClientSpy, globalStateMock);
     const { videos, errorMessage } = await remoteSearchVideo.search({
       query: 'any_search'
     });
@@ -62,7 +61,7 @@ describe('Data: RemoteSearchVideo', () => {
       statusCode: 200,
       data: getResponse
     };
-    const remoteSearchVideo = new RemoteSearchVideo(url, httpGetClientSpy, globalStateMock);
+    const remoteSearchVideo = new RemoteSearchVideos(url, httpGetClientSpy, globalStateMock);
 
     const response = await remoteSearchVideo.search({ query: 'any_search' });
 

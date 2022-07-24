@@ -18,7 +18,7 @@ export type RawSearchVideoParams = Omit<SearchVideosParams, 'query'> & {
   q: string;
 };
 
-export class RemoteSearchVideo implements SearchVideos {
+export class RemoteSearchVideos implements SearchVideos {
   constructor(
     private readonly url: string,
     private readonly httpGetClient: HttpGetClient<RawSearchVideoParams, GetSearchVideosResponse>,

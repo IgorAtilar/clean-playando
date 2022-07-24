@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { SearchVideosResponse } from '@/domain/usecases/search-videos';
 import { VideoResponse } from '@/domain/models/video-model';
-import { GetSearchVideosResponse } from '@/data/usecases/remote-search-videos/remote-search-video';
+import { GetSearchVideosResponse } from '@/data/usecases/remote-search-videos/remote-search-videos';
 import { getFormattedDateString } from '@/utils/date';
 
 export const mockGetResponseVideo = (): VideoResponse => ({

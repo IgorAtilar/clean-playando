@@ -45,5 +45,5 @@ export const mockResponse = (response: GetSearchVideoByUrlResponse): SearchVideo
     publishedAt: getFormattedDateString(video.snippet.publishedAt)
   }))[0];
 
-  return { video };
+  return { video, success: 'Vídeo adicionado com sucesso :D' };
 };
