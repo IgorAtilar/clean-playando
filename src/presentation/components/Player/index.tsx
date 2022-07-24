@@ -6,12 +6,14 @@ import {
   ControlsContainer,
   Icon,
   Image,
-  IMAGE_HEIGHT_MEDIUM,
-  IMAGE_URL_MEDIUM,
-  IMAGE_WIDTH_MEDIUM,
+  IMAGE_HEIGHT,
+  IMAGE_URL,
+  IMAGE_WIDTH,
   IconButton,
   YoutuberPlayerContainer
 } from './styles';
+
+export const YOUTUBE_PLAYER_TEST_ID = 'youtube_player_test_id';
 
 export type PlayerProps = {
   position: string;
@@ -44,15 +46,16 @@ export function Player({
   }, [isPlaying]);
 
   const imageStyle = {
-    [IMAGE_HEIGHT_MEDIUM]: `${thumbnails.medium.height}px`,
-    [IMAGE_WIDTH_MEDIUM]: `${thumbnails.medium.width}px`,
-    [IMAGE_URL_MEDIUM]: `url(${thumbnails.medium.url})`
+    [IMAGE_HEIGHT]: `${thumbnails.medium.height}px`,
+    [IMAGE_WIDTH]: `${thumbnails.medium.width}px`,
+    [IMAGE_URL]: `url(${thumbnails.medium.url})`
   } as CSSProperties;
 
   return (
     <YoutuberPlayerContainer>
       {isPlaying ? (
         <YoutubePlayer
+          data-testid={YOUTUBE_PLAYER_TEST_ID}
           ref={playerRef}
           playing={isPlaying}
           controls={false}

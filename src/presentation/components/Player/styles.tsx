@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
-export const IMAGE_HEIGHT_MEDIUM = '--image-height-medium';
-export const IMAGE_WIDTH_MEDIUM = '--image-width-medium';
-export const IMAGE_URL_MEDIUM = '--image-url-medium';
+export const IMAGE_HEIGHT = '--image-height';
+export const IMAGE_WIDTH = '--image-width';
+export const IMAGE_URL = '--image-url';
 
 export const YoutuberPlayerContainer = styled.div`
   display: flex;
@@ -33,9 +33,9 @@ export const ControlsContainer = styled.div`
 `;
 
 export const Image = styled.img`
-  height: var(${IMAGE_HEIGHT_MEDIUM});
-  width: var(${IMAGE_WIDTH_MEDIUM});
-  content: var(${IMAGE_URL_MEDIUM});
+  height: var(${IMAGE_HEIGHT});
+  width: var(${IMAGE_WIDTH});
+  content: var(${IMAGE_URL});
 `;
 
 export const Icon = styled.img`
