@@ -13,4 +13,14 @@ describe('Data: LocalSaveVideoOnStorage', () => {
     const currentStorage = persistentStorage.get(PLAYLIST_PERSISTENT_STORAGE_KEY);
     expect(currentStorage).toStrictEqual([video]);
   });
+
+  it('should not save the same video twice on storage when save method is called', () => {
+    const persistentStorage = new PersistentStorageMock<Video>();
+    const localSaveVideoOnStorage = new LocalSaveVideoOnStorage(persistentStorage);
+    const video = mockVideo();
+    localSaveVideoOnStorage.save(video);
+    const currentStorage = persistentStorage.get(PLAYLIST_PERSISTENT_STORAGE_KEY);
+    localSaveVideoOnStorage.save(video);
+    expect(currentStorage).toStrictEqual([video]);
+  });
 });
