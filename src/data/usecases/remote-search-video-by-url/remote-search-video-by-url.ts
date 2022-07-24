@@ -1,4 +1,5 @@
 import { HttpGetClient } from '@/data/protocols/http/http-get-client';
+import { NotFoundError } from '@/domain/errors/not-found-error';
 import { UnexpectedError } from '@/domain/errors/unexpected-error';
 import { Video, VideoByUrlResponse } from '@/domain/models/video-model';
 import {
@@ -35,12 +36,16 @@ export class RemoteSearchVideoByUrl implements SearchVideoByUrl {
     if (statusCode !== 200) {
       const error = new UnexpectedError();
       return {
-        errorMessage: error.message,
-        video: {} as Video
+        errorMessage: error.message
       };
     }
 
-    if (!data?.items) return { video: {} as Video };
+    if (!data?.items || data?.items?.length === 0) {
+      const error = new NotFoundError();
+      return {
+        errorMessage: error.message
+      };
+    }
 
     const video: Video = data.items.map((item) => ({
       id: item.id,
@@ -50,6 +55,6 @@ export class RemoteSearchVideoByUrl implements SearchVideoByUrl {
       publishedAt: getFormattedDateString(item.snippet.publishedAt)
     }))[0];
 
-    return { video };
+    return { video, success: 'Vídeo adicionado com sucesso :D' };
   }
 }

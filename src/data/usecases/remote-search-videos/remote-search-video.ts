@@ -1,4 +1,5 @@
 import { HttpGetClient } from '@/data/protocols/http/http-get-client';
+import { NotFoundError } from '@/domain/errors/not-found-error';
 import { UnexpectedError } from '@/domain/errors/unexpected-error';
 import { Video, VideoResponse } from '@/domain/models/video-model';
 import {
@@ -13,15 +14,19 @@ export type GetSearchVideosResponse = {
   items: VideoResponse[];
 };
 
+export type RawSearchVideoParams = Omit<SearchVideosParams, 'query'> & {
+  q: string;
+};
+
 export class RemoteSearchVideo implements SearchVideos {
   constructor(
     private readonly url: string,
-    private readonly httpGetClient: HttpGetClient<SearchVideosParams, GetSearchVideosResponse>,
+    private readonly httpGetClient: HttpGetClient<RawSearchVideoParams, GetSearchVideosResponse>,
     private readonly globalState: GlobalStateAdapter
   ) {}
 
   async search(params: SearchVideosParams): Promise<SearchVideosResponse> {
-    const search = params.q;
+    const search = params.query;
 
     const searchCachedVideos = this.globalState.getSearchCacheOnGlobalState(search);
 
@@ -29,18 +34,25 @@ export class RemoteSearchVideo implements SearchVideos {
 
     const { statusCode, data } = await this.httpGetClient.get({
       url: this.url,
-      params
+      params: {
+        maxResults: params?.maxResults,
+        q: params.query
+      }
     });
 
     if (statusCode !== 200) {
       const error = new UnexpectedError();
       return {
-        errorMessage: error.message,
-        videos: []
+        errorMessage: error.message
       };
     }
 
-    if (!data?.items) return { videos: [] };
+    if (!data?.items || data?.items.length === 0) {
+      const error = new NotFoundError();
+      return {
+        errorMessage: error.message
+      };
+    }
 
     const videos: Video[] = data.items.map((item) => ({
       id: item.id.videoId,

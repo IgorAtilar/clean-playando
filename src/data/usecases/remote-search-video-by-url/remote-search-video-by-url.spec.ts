@@ -47,7 +47,7 @@ describe('Data: RemoteSearchVideoByUrl', () => {
     const remoteSearchVideoByUrl = new RemoteSearchVideoByUrl(url, httpGetClientSpy);
     const { video, errorMessage } = await remoteSearchVideoByUrl.search('any_video_url');
     expect(errorMessage).toBe(new UnexpectedError().message);
-    expect(video).toEqual({});
+    expect(video).toBeUndefined();
   });
 
   it('should return the first video if HttpGetClient return status code 200', async () => {

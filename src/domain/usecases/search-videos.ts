@@ -1,12 +1,12 @@
 import { Video } from '../models/video-model';
 
 export type SearchVideosParams = {
-  q: string;
+  query: string;
   maxResults?: number;
 };
 
 export type SearchVideosResponse = {
-  videos: Video[];
+  videos?: Video[];
   errorMessage?: string;
 };
 

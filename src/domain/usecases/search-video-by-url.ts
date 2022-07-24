@@ -5,8 +5,9 @@ export type SearchVideoByUrlParams = {
 };
 
 export type SearchVideoByUrlResponse = {
-  video: Video;
+  video?: Video;
   errorMessage?: string;
+  success?: string;
 };
 
 export interface SearchVideoByUrl {
