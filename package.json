@@ -6,12 +6,12 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "lint:fix": "eslint src/**/* --fix",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
     "format": "prettier --write src/**/*.{ts,tsx} --config ./.prettierrc",
     "test": "jest --passWithNoTests",
-    "test:watch": "yarn test -- --watch",
-    "test:staged": "yarn test -- --findRelatedTests",
-    "test:ci": "yarn test -- --coverage",
+    "test:watch": "yarn test --watch",
+    "test:staged": "yarn test --onlyChanged",
+    "test:ci": "yarn test --coverage",
     "build": "webpack",
     "postinstall": "husky install",
     "dev": "webpack-dev-server --open"
