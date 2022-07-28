@@ -1,3 +1,3 @@
 export function makeApiUrl(path: string) {
-  return `${process.env.API_URL}${path}`;
+  return `${process.env.YOUTUBE_API_URL}${path}`;
 }
