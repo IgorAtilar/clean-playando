@@ -6,11 +6,13 @@ import { FilterBar, FilterBarProps } from '.';
 describe('Presentation: Components/FilterBar', () => {
   const defaultProps: FilterBarProps = {
     placeholder: 'placeholder-test',
-    onSubmit: () => {}
+    onFilter: () => {},
+    onClearFilter: () => {},
+    type: 'filter'
   };
 
   it('should show the button with the text "Filtrar" if filterBarType is "filter"', () => {
-    const { rerender } = render(<FilterBar {...defaultProps} filterBarType="filter" />);
+    const { rerender } = render(<FilterBar {...defaultProps} type="filter" />);
     const firstButton = screen.getByRole('button', { name: 'Filtrar' });
     expect(firstButton).toBeInTheDocument();
     rerender(<FilterBar {...defaultProps} />);
@@ -19,17 +21,17 @@ describe('Presentation: Components/FilterBar', () => {
   });
 
   it('should show the button with the text "Limpar filtro" if filterBarType is "clear"', () => {
-    render(<FilterBar {...defaultProps} filterBarType="clear" />);
+    render(<FilterBar {...defaultProps} type="clear" />);
     const button = screen.getByRole('button', { name: 'Limpar filtro' });
     expect(button).toBeInTheDocument();
   });
 
   describe('actions', () => {
-    it('should call onSubmit with the correct value when user click on button', async () => {
+    it('should call onFilter with the correct value when user click on filter button', async () => {
       const user = userEvent.setup();
       const handler = jest.fn();
       const text = faker.lorem.words();
-      render(<FilterBar {...defaultProps} onSubmit={handler} />);
+      render(<FilterBar {...defaultProps} onFilter={handler} />);
       const input = screen.getByPlaceholderText(defaultProps.placeholder);
       const button = screen.getByRole('button');
       await user.type(input, text);
@@ -37,14 +39,23 @@ describe('Presentation: Components/FilterBar', () => {
       expect(handler).toHaveBeenCalledWith(text);
     });
 
-    it('should call onSubmit callback when pressing enter on FilterBar input', async () => {
+    it('should call onFilter callback when pressing enter on FilterBar input', async () => {
       const user = userEvent.setup();
       const handler = jest.fn();
       const text = faker.lorem.words();
-      render(<FilterBar {...defaultProps} onSubmit={handler} />);
+      render(<FilterBar {...defaultProps} onFilter={handler} />);
       const input = screen.getByPlaceholderText(defaultProps.placeholder);
       await user.type(input, `${text}{enter}`);
       expect(handler).toHaveBeenCalledWith(text);
+    });
+
+    it('should call onClearFilter callback when filterBarType is "clear" and the clear button is pressed', async () => {
+      const user = userEvent.setup();
+      const handler = jest.fn();
+      render(<FilterBar {...defaultProps} onClearFilter={handler} type="clear" />);
+      const button = screen.getByRole('button', { name: 'Limpar filtro' });
+      await user.click(button);
+      expect(handler).toHaveBeenCalledTimes(1);
     });
   });
 });

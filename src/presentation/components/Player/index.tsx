@@ -18,16 +18,16 @@ export const YOUTUBE_PLAYER_TEST_ID = 'youtube_player_test_id';
 export type PlayerProps = {
   position: string;
   video: Video;
-  isPlaying?: boolean;
-  togglePlay?: (id: string) => void;
-  onRemove?: (id: string) => void;
+  isPlaying: boolean;
+  onTogglePlay: (id: string) => void;
+  onRemove: (id: string) => void;
 };
 
 export function Player({
   position,
   video: { id, thumbnails, title },
   isPlaying,
-  togglePlay,
+  onTogglePlay,
   onRemove
 }: PlayerProps) {
   const playerRef = useRef<YoutubePlayer>();
@@ -77,15 +77,15 @@ export function Player({
       )}
       <ControlsContainer>
         {isPlaying ? (
-          <IconButton title="pausar" onClick={() => togglePlay?.(id)}>
+          <IconButton title="pausar" onClick={() => onTogglePlay(id)}>
             <Icon src="./assets/pause-icon.svg" aria-label="ícone de pause" />
           </IconButton>
         ) : (
-          <IconButton title="iniciar" onClick={() => togglePlay?.(id)}>
+          <IconButton title="iniciar" onClick={() => onTogglePlay(id)}>
             <Icon src="./assets/play-icon.svg" aria-label="ícone de play" />
           </IconButton>
         )}
-        <IconButton title="excluir da playlist" onClick={() => onRemove?.(id)}>
+        <IconButton title="excluir da playlist" onClick={() => onRemove(id)}>
           <Icon src="./assets/delete-icon.svg" aria-label="ícone de excluir" />
         </IconButton>
       </ControlsContainer>

@@ -6,7 +6,10 @@ import { Player, PlayerProps, YOUTUBE_PLAYER_TEST_ID } from '.';
 describe('Presentation: Components/Player', () => {
   const defaultProps: PlayerProps = {
     position: '1',
-    video: mockVideo()
+    video: mockVideo(),
+    isPlaying: false,
+    onRemove: () => {},
+    onTogglePlay: () => {}
   };
   it('should render the youtube player if isPlaying prop is true', () => {
     render(<Player {...defaultProps} isPlaying />);
@@ -51,7 +54,7 @@ describe('Presentation: Components/Player', () => {
     it('should call togglePlay callback with the correct id when pause button is pressed', async () => {
       const user = userEvent.setup();
       const handler = jest.fn();
-      render(<Player {...defaultProps} isPlaying togglePlay={handler} />);
+      render(<Player {...defaultProps} isPlaying onTogglePlay={handler} />);
       const pauseButton = screen.getByRole('button', { name: 'ícone de pause' });
       await user.click(pauseButton);
       expect(handler).toHaveBeenCalledWith(defaultProps.video.id);
@@ -60,7 +63,7 @@ describe('Presentation: Components/Player', () => {
     it('should call togglePlay callback with the correct id when play button is pressed', async () => {
       const user = userEvent.setup();
       const handler = jest.fn();
-      render(<Player {...defaultProps} isPlaying={false} togglePlay={handler} />);
+      render(<Player {...defaultProps} isPlaying={false} onTogglePlay={handler} />);
       const playButton = screen.getByRole('button', { name: 'ícone de play' });
       await user.click(playButton);
       expect(handler).toHaveBeenCalledWith(defaultProps.video.id);

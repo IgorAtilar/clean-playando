@@ -6,10 +6,10 @@ import { Container } from './styles';
 export type FilterBarType = 'filter' | 'clear';
 
 export type FilterBarProps = {
-  filterBarType?: FilterBarType;
-  onSubmit: (value: string) => void;
+  type: FilterBarType;
+  onFilter: (value: string) => void;
   placeholder?: string;
-  onClear?: () => void;
+  onClearFilter: () => void;
   className?: string;
 };
 
@@ -19,10 +19,10 @@ export const mapFilterBarTypeToText: Record<FilterBarType, string> = {
 };
 
 export function FilterBar({
-  filterBarType = 'filter',
-  onSubmit,
+  type,
+  onFilter,
   placeholder,
-  onClear,
+  onClearFilter,
   className
 }: FilterBarProps) {
   const inputRef = useRef<HTMLInputElement>();
@@ -30,14 +30,14 @@ export function FilterBar({
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const { value } = inputRef.current;
-    onSubmit(value);
+    onFilter(value);
     inputRef.current.value = '';
     inputRef.current.blur();
   };
 
   const handleFilter = () => {
     const { value } = inputRef.current;
-    onSubmit(value);
+    onFilter(value);
     inputRef.current.value = '';
     inputRef.current.blur();
   };
@@ -47,13 +47,13 @@ export function FilterBar({
       <form onSubmit={handleSubmit}>
         <Input ref={inputRef} name="filter" placeholder={placeholder} />
       </form>
-      {filterBarType === 'filter' ? (
+      {type === 'filter' ? (
         <Button type="button" colorScheme="secondary" onClick={handleFilter}>
-          {mapFilterBarTypeToText[filterBarType]}
+          {mapFilterBarTypeToText[type]}
         </Button>
       ) : (
-        <Button type="button" colorScheme="secondary" onClick={() => onClear?.()}>
-          {mapFilterBarTypeToText[filterBarType]}
+        <Button type="button" colorScheme="secondary" onClick={() => onClearFilter?.()}>
+          {mapFilterBarTypeToText[type]}
         </Button>
       )}
     </Container>

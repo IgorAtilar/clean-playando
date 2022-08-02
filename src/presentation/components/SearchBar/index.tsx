@@ -6,11 +6,10 @@ import { Container } from './styles';
 export type SearchBarType = 'add' | 'search';
 
 export type SearchBarProps = {
-  onSearch: (value: string) => void;
+  onSubmit: (value: string) => void;
   onInputChange: (value: string) => void;
-  onAdd: (videoUrl: string) => void;
   placeholder?: string;
-  searchBarType?: SearchBarType;
+  type: SearchBarType;
   className?: string;
 };
 
@@ -20,34 +19,19 @@ export const mapSearchBarTypeToButtonText: Record<SearchBarType, string> = {
 };
 
 export function SearchBar({
-  onSearch,
+  onSubmit,
   onInputChange,
-  onAdd,
   placeholder = '',
-  searchBarType = 'search',
+  type,
   className
 }: SearchBarProps) {
   const inputRef = useRef<HTMLInputElement>();
 
-  const handleSearch = () => {
-    const { value } = inputRef.current;
-    onSearch(value);
-    inputRef.current.value = '';
-    return inputRef.current.blur();
-  };
-
-  const handleAdd = () => {
-    const { value } = inputRef.current;
-    onAdd(value);
-    inputRef.current.value = '';
-    return inputRef.current.blur();
-  };
-
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (searchBarType === 'add') return handleAdd();
+
     const { value } = inputRef.current;
-    onSearch(value);
+    onSubmit(value);
     inputRef.current.value = '';
     return inputRef.current.blur();
   };
@@ -57,24 +41,9 @@ export function SearchBar({
   };
 
   return (
-    <Container className={className}>
-      <form onSubmit={handleSubmit}>
-        <Input
-          ref={inputRef}
-          onChange={handleInputChange}
-          name="search"
-          placeholder={placeholder}
-        />
-      </form>
-      {searchBarType === 'search' ? (
-        <Button type="button" onClick={handleSearch}>
-          {mapSearchBarTypeToButtonText[searchBarType]}
-        </Button>
-      ) : (
-        <Button type="button" onClick={handleAdd}>
-          {mapSearchBarTypeToButtonText[searchBarType]}
-        </Button>
-      )}
+    <Container onSubmit={handleSubmit} className={className}>
+      <Input ref={inputRef} onChange={handleInputChange} name="search" placeholder={placeholder} />
+      <Button type="submit">{mapSearchBarTypeToButtonText[type]}</Button>
     </Container>
   );
 }
