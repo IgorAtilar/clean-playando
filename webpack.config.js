@@ -22,6 +22,14 @@ module.exports = {
         test: /\.ts(x?)$/,
         loader: 'ts-loader',
         exclude: /node_modules/
+      },
+      {
+        test: /\.svg$/,
+        loader: '@svgr/webpack',
+        options: {
+          dimensions: false,
+          typescript: true
+        }
       }
     ]
   },
@@ -30,10 +38,11 @@ module.exports = {
     compress: true,
     port: 3000
   },
-  plugins: [new CleanWebpackPlugin(),
+  plugins: [
+    new CleanWebpackPlugin(),
     new Dotenv({
-        path: './.env',
-        safe: true,
-      })
-]
+      path: './.env',
+      safe: true
+    })
+  ]
 };

@@ -14,7 +14,8 @@ module.exports = {
   coverageDirectory: 'coverage',
   testEnvironment: 'jsdom',
   transform: {
-    '.+\\.ts$': 'ts-jest'
+    '.+\\.ts$': 'ts-jest',
+    '^.+\\.svg$': '<rootDir>/svgTransform.js'
   },
   moduleNameMapper: {
     '@/(.*)': '<rootDir>/src/$1'
