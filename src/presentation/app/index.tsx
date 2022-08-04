@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-no-useless-fragment */
 import { FC } from 'react';
 import { ThemeProvider } from 'styled-components';
+import { ToastProvider } from '../contexts/ToastContext';
 import { GlobalStyles, theme } from '../styles';
 
 type AppProps = {
@@ -12,7 +13,9 @@ export function App({ makeHome }: AppProps) {
 
   return (
     <ThemeProvider theme={theme}>
-      <Home />
+      <ToastProvider>
+        <Home />
+      </ToastProvider>
       <GlobalStyles />
     </ThemeProvider>
   );
