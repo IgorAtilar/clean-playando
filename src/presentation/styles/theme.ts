@@ -9,7 +9,8 @@ export const theme = {
     gray400: '#A0AEC0',
     gray100: '#EDF2F7',
     error: '#E53E3E',
-    success: '#48BB78'
+    success: '#48BB78',
+    warning: '#D69E2E'
   },
   fonts: {
     regular: '400',

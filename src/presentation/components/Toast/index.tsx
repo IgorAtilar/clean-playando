@@ -1,69 +1,64 @@
-import { useEffect } from 'react';
-import ReactDOM from 'react-dom';
 import {
-  Container,
   ToastSuccessContainer,
   ToastErrorContainer,
-  ToastBody,
-  ToastHeader
+  ToastContent,
+  ToastWarningContainer,
+  CloseButton
 } from './styles';
 
-let toastRoot = document.getElementById('toast-root');
+import CloseIconSvg from '@/presentation/assets/delete-icon.svg';
 
-export type ToastType = 'success' | 'error';
+export type ToastType = 'success' | 'error' | 'warning';
 
 export type ToastProps = {
-  isOpen?: boolean;
   text: string;
   type?: ToastType;
-  closeToast: () => void;
-  autoCloseDelay?: number;
+  closeToast?: () => void;
 };
 
 const mapTypeToToastContainer = {
   success: ToastSuccessContainer,
-  error: ToastErrorContainer
+  error: ToastErrorContainer,
+  warning: ToastWarningContainer
 };
 
-export function Toast({ isOpen, text, type = 'success', closeToast, autoCloseDelay }: ToastProps) {
-  let timeout;
+const mapTypeToToastEmoji: Record<ToastType, string> = {
+  success: '🥳',
+  error: '😥',
+  warning: '🧐'
+};
 
-  if (!toastRoot) {
-    toastRoot = document.createElement('div');
-    toastRoot.setAttribute('id', 'toast-root');
-    document.body.appendChild(toastRoot);
-  }
+export const mapTypeToToastEmojiLabel: Record<ToastType, string> = {
+  error: 'carinha triste',
+  success: 'carinha comemorando',
+  warning: 'carinha curiosa'
+};
 
-  const ToastContainer = mapTypeToToastContainer[type];
+export function Toast({ text, type = 'success', closeToast }: ToastProps) {
+  const ToastContainer = mapTypeToToastContainer[type] || mapTypeToToastContainer.error;
+  const emoji = mapTypeToToastEmoji[type] || mapTypeToToastEmoji.error;
+  const emojiLabel = mapTypeToToastEmojiLabel[type] || mapTypeToToastEmojiLabel.error;
 
-  if (!isOpen) return null;
-
-  useEffect(() => {
-    if (!timeout && autoCloseDelay) {
-      timeout = setTimeout(closeToast, autoCloseDelay);
-    }
-
-    return () => {
-      if (timeout && autoCloseDelay) {
-        clearTimeout(timeout);
-      }
-    };
-  }, [isOpen]);
-
-  return ReactDOM.createPortal(
-    <Container role="dialog">
-      <ToastContainer>
-        <ToastHeader>
-          <button type="button" onClick={closeToast}>
-            Fechar
-          </button>
-        </ToastHeader>
-        <ToastBody>
-          <span>{type === 'success' ? '🥳' : '😥'}</span>
-          {text}
-        </ToastBody>
-      </ToastContainer>
-    </Container>,
-    toastRoot
+  return (
+    <ToastContainer role="dialog">
+      <ToastContent>
+        <div>
+          <span role="img" aria-label={emojiLabel}>
+            {emoji}
+          </span>
+          {closeToast && (
+            <CloseButton type="button" onClick={closeToast}>
+              <CloseIconSvg aria-label="fechar" />
+            </CloseButton>
+          )}
+        </div>
+        {text}
+      </ToastContent>
+      {closeToast && (
+        <CloseButton type="button" onClick={closeToast}>
+          <CloseIconSvg aria-label="fechar" />
+        </CloseButton>
+      )}
+    </ToastContainer>
   );
 }
