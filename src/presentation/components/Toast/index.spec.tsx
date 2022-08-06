@@ -10,7 +10,6 @@ describe('Presentation: Components/Toast', () => {
 
   it('should render the text passed by text prop', () => {
     render(<Toast {...defaultProps} />);
-    screen.debug();
     const text = screen.getByText(defaultProps.text);
     expect(text).toBeInTheDocument();
   });
