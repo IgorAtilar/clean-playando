@@ -1,17 +1,8 @@
-import { CSSProperties, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import YoutubePlayer from 'react-player/youtube';
 import { Video } from '@/domain/models/video-model';
 
-import {
-  ControlsContainer,
-  Icon,
-  Image,
-  IMAGE_HEIGHT,
-  IMAGE_URL,
-  IMAGE_WIDTH,
-  IconButton,
-  YoutuberPlayerContainer
-} from './styles';
+import { ControlsContainer, Icon, Image, IconButton, YoutuberPlayerContainer } from './styles';
 
 export const YOUTUBE_PLAYER_TEST_ID = 'youtube_player_test_id';
 
@@ -25,7 +16,7 @@ export type PlayerProps = {
 
 export function Player({
   position,
-  video: { id, thumbnails, title },
+  video: { id, thumbnailUrl, title },
   isPlaying,
   onTogglePlay,
   onRemove
@@ -45,12 +36,6 @@ export function Player({
     }
   }, [isPlaying]);
 
-  const imageStyle = {
-    [IMAGE_HEIGHT]: `${thumbnails.medium.height}px`,
-    [IMAGE_WIDTH]: `${thumbnails.medium.width}px`,
-    [IMAGE_URL]: `url(${thumbnails.medium.url})`
-  } as CSSProperties;
-
   return (
     <YoutuberPlayerContainer>
       {isPlaying ? (
@@ -66,14 +51,14 @@ export function Player({
             }
           }}
           onProgress={handleProgress}
-          width={`${thumbnails.medium.width}px`}
-          height={`${thumbnails.medium.height}px`}
+          width="320px"
+          height="180px"
           style={{
             pointerEvents: 'none'
           }}
         />
       ) : (
-        <Image style={imageStyle} alt={`thumbnail do vídeo ${title}`} />
+        <Image src={thumbnailUrl} alt={`thumbnail do vídeo ${title}`} />
       )}
       <ControlsContainer>
         {isPlaying ? (

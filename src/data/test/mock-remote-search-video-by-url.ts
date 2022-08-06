@@ -41,7 +41,7 @@ export const mockResponse = (response: GetSearchVideoByUrlResponse): SearchVideo
     id: video.id,
     title: video.snippet.title,
     channelTitle: video.snippet.channelTitle,
-    thumbnails: video.snippet.thumbnails,
+    thumbnailUrl: video.snippet.thumbnails.medium.url,
     publishedAt: getFormattedDateString(video.snippet.publishedAt)
   }))[0];
 

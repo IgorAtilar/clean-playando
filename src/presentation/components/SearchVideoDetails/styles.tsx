@@ -1,9 +1,5 @@
 import styled from 'styled-components';
 
-export const IMAGE_HEIGHT_MEDIUM = '--image-height-medium';
-export const IMAGE_WIDTH_MEDIUM = '--image-width-medium';
-export const IMAGE_URL_MEDIUM = '--image-url-medium';
-
 export const SearchVideoDetailsContainer = styled.div`
   display: flex;
   width: 100%;
@@ -21,9 +17,8 @@ export const SearchVideoDetailsContainer = styled.div`
 
 export const Image = styled.img`
   border: 2px solid ${({ theme }) => theme.colors.gray500};
-  height: var(${IMAGE_HEIGHT_MEDIUM});
-  width: var(${IMAGE_WIDTH_MEDIUM});
-  content: var(${IMAGE_URL_MEDIUM});
+  height: 180px;
+  width: 320px;
 `;
 
 export const Body = styled.div`

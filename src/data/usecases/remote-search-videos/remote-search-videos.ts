@@ -58,7 +58,7 @@ export class RemoteSearchVideos implements SearchVideos {
       id: item.id.videoId,
       title: item.snippet.title,
       channelTitle: item.snippet.channelTitle,
-      thumbnails: item.snippet.thumbnails,
+      thumbnailUrl: item.snippet.thumbnails.medium.url,
       publishedAt: getFormattedDateString(item.snippet.publishedAt)
     }));
 

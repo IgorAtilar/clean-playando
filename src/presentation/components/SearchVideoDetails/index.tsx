@@ -2,15 +2,7 @@ import { CSSProperties } from 'react';
 import { Video } from '@/domain/models/video-model';
 import { Button } from '../Button';
 
-import {
-  Body,
-  Image,
-  InfoContainer,
-  SearchVideoDetailsContainer,
-  IMAGE_HEIGHT_MEDIUM,
-  IMAGE_WIDTH_MEDIUM,
-  IMAGE_URL_MEDIUM
-} from './styles';
+import { Body, Image, InfoContainer, SearchVideoDetailsContainer } from './styles';
 
 export type SearchVideoDetailsProps = {
   video: Video;
@@ -19,17 +11,11 @@ export type SearchVideoDetailsProps = {
 };
 
 export function SearchVideoDetails({ video, onAdd, className }: SearchVideoDetailsProps) {
-  const { channelTitle, publishedAt, thumbnails, title } = video;
-
-  const imageStyle = {
-    [IMAGE_HEIGHT_MEDIUM]: `${thumbnails.medium.height - 48}px`,
-    [IMAGE_WIDTH_MEDIUM]: `${thumbnails.medium.width - 48}px`,
-    [IMAGE_URL_MEDIUM]: `url(${thumbnails.medium.url})`
-  } as CSSProperties;
+  const { channelTitle, publishedAt, thumbnailUrl, title } = video;
 
   return (
     <SearchVideoDetailsContainer className={className}>
-      <Image style={imageStyle} alt={`thumbnail do vídeo ${title}`} />
+      <Image src={thumbnailUrl} alt={`thumbnail do vídeo ${title}`} />
       <Body>
         <InfoContainer>
           <strong>{title}</strong>
