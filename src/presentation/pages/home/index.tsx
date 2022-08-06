@@ -9,6 +9,7 @@ import { SearchVideoByUrl } from '@/domain/usecases/search-video-by-url';
 import { isYoutubeVideoUrl } from '@/services/youtube';
 import { HomeLayout } from '@/presentation/layouts/home';
 import { useHomeReducer, Action } from './hooks/useHomeReducer';
+import { useToast } from '@/presentation/contexts/ToastContext';
 
 export type HomeProps = {
   searchVideos: SearchVideos;
@@ -30,6 +31,7 @@ export function Home({
   removeFilterOnPlaylist
 }: HomeProps) {
   const { state, dispatch } = useHomeReducer();
+  const { showToast } = useToast();
 
   const {
     filterBarType,
@@ -82,7 +84,14 @@ export function Home({
   };
 
   const handleSaveVideoOnPlaylist = (video: Video) => {
-    saveVideo.save(video);
+    const { success, errorMessage } = saveVideo.save(video);
+    const text = success || errorMessage;
+    const type = success ? 'success' : 'warning';
+
+    showToast({
+      text,
+      type
+    });
   };
 
   const handleSaveVideoByUrl = async (videoUrl: string) => {
@@ -92,6 +101,11 @@ export function Home({
     });
 
     const { video, errorMessage } = await searchVideoByUrl.search(videoUrl);
+
+    showToast({
+      text: errorMessage,
+      type: 'error'
+    });
 
     if (errorMessage) return;
 
@@ -124,7 +138,14 @@ export function Home({
     });
   };
 
-  const handleRemoveVideo = (id: string) => removeVideo.remove(id);
+  const handleRemoveVideo = (id: string) => {
+    removeVideo.remove(id);
+
+    showToast({
+      text: 'Vídeo removido com sucesso.',
+      type: 'success'
+    });
+  };
 
   const handleFilterPlaylist = (value: string) => {
     filterPlaylist.filter(value);
