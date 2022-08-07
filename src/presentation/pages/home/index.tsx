@@ -40,7 +40,8 @@ export function Home({
     searchBarType,
     currentPlayingVideoId,
     searchVideosModalErrorMessage,
-    searchedVideosResult
+    searchedVideosResult,
+    isPlayerVideoModalOpen
   } = state;
 
   const playlistVideos = playlist.get();
@@ -102,12 +103,13 @@ export function Home({
 
     const { video, errorMessage } = await searchVideoByUrl.search(videoUrl);
 
-    showToast({
-      text: errorMessage,
-      type: 'error'
-    });
-
-    if (errorMessage) return;
+    if (!video || errorMessage) {
+      showToast({
+        type: 'error',
+        text: errorMessage
+      });
+      return;
+    }
 
     handleSaveVideoOnPlaylist(video);
   };
@@ -125,16 +127,15 @@ export function Home({
     });
   };
 
-  const handleTogglePlay = (id: string) => {
-    if (id === currentPlayingVideoId)
-      return dispatch({
-        type: Action.SET_CURRENT_VIDEO_PLAYING_ID,
-        payload: ''
-      });
-
-    return dispatch({
+  const handlePlayVideo = (id: string) => {
+    dispatch({
       type: Action.SET_CURRENT_VIDEO_PLAYING_ID,
       payload: id
+    });
+
+    dispatch({
+      type: Action.SET_IS_VIDEO_PLAYER_MODAL_OPEN,
+      payload: true
     });
   };
 
@@ -165,6 +166,13 @@ export function Home({
 
   return (
     <HomeLayout
+      isVideoPlayerModalOpen={isPlayerVideoModalOpen && !!currentPlayingVideoId}
+      onCloseVideoPlayerModal={() =>
+        dispatch({
+          type: Action.SET_IS_VIDEO_PLAYER_MODAL_OPEN,
+          payload: false
+        })
+      }
       filterBarType={filterBarType}
       searchBarType={searchBarType}
       playlistVideos={playlistVideos}
@@ -182,7 +190,7 @@ export function Home({
       onRemoveVideoFromPlaylist={handleRemoveVideo}
       onSearch={handleSearch}
       onSearchBarInputChange={handleSearchBarInputChange}
-      onTogglePlay={handleTogglePlay}
+      onPlayVideo={handlePlayVideo}
       currentPlayingVideoId={currentPlayingVideoId}
       searchVideosModalErrorMessage={searchVideosModalErrorMessage}
       searchedVideosResult={searchedVideosResult}
