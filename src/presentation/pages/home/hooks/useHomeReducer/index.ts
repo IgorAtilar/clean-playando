@@ -7,6 +7,7 @@ export enum Action {
   SET_SEARCH_VIDEOS_MODAL_ERROR_MESSAGE = 'set_search_videos_modal_error_message',
   SET_SEARCHED_VIDEOS_RESULT = 'set_searched_videos_result',
   SET_CURRENT_VIDEO_PLAYING_ID = 'set_current_video_playing_id',
+  SET_IS_VIDEO_PLAYER_MODAL_OPEN = 'set_is_video_player_modal_open',
   SET_IS_SEARCH_VIDEOS_LOADING = 'set_is_search_videos_loading',
   SET_FILTER_BAR_TYPE = 'set_filter_bar_type',
   SET_SEARCH_BAR_TYPE = 'set_search_bar_type'
@@ -22,11 +23,13 @@ export type HomeAction =
   | { type: Action.SET_CURRENT_VIDEO_PLAYING_ID; payload: string }
   | { type: Action.SET_IS_SEARCH_VIDEOS_LOADING; payload: boolean }
   | { type: Action.SET_FILTER_BAR_TYPE; payload: FilterBarType }
-  | { type: Action.SET_SEARCH_BAR_TYPE; payload: SearchBarType };
+  | { type: Action.SET_SEARCH_BAR_TYPE; payload: SearchBarType }
+  | { type: Action.SET_IS_VIDEO_PLAYER_MODAL_OPEN; payload: boolean };
 
 type HomeState = {
   isSearchVideosModalOpen: boolean;
   isSearchVideosLoading: boolean;
+  isPlayerVideoModalOpen: boolean;
   searchVideosModalErrorMessage?: string;
   searchedVideosResult?: Video[];
   currentPlayingVideoId?: string;
@@ -85,6 +88,13 @@ function homeStateReducer(state: HomeState, action: HomeAction): HomeState {
         searchBarType: payload
       };
     }
+    case Action.SET_IS_VIDEO_PLAYER_MODAL_OPEN: {
+      const { payload } = action;
+      return {
+        ...state,
+        isPlayerVideoModalOpen: payload
+      };
+    }
     default:
       return state;
   }
@@ -93,6 +103,7 @@ function homeStateReducer(state: HomeState, action: HomeAction): HomeState {
 const initialHomeState = {
   isSearchVideosModalOpen: false,
   isSearchVideosLoading: false,
+  isPlayerVideoModalOpen: false,
   searchVideosModalErrorMessage: '',
   searchedVideosResult: [],
   currentPlayingVideoId: '',

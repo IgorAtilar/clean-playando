@@ -3,7 +3,8 @@ import {
   FilterBarType,
   VideoCard,
   SearchBarType,
-  SearchVideosModal
+  SearchVideosModal,
+  VideoPlayerModal
 } from '@/presentation/components';
 import { Video } from '@/domain/models/video-model';
 import { EmptyState } from '@/presentation/components/EmptyState';
@@ -48,7 +49,9 @@ export type HomeLayoutProps = {
   filterBarType: FilterBarType;
   playlistVideos: Video[];
   currentPlayingVideoId?: string;
-  onTogglePlay: (id: string) => void;
+  onPlayVideo: (id: string) => void;
+  isVideoPlayerModalOpen?: boolean;
+  onCloseVideoPlayerModal: () => void;
   onRemoveVideoFromPlaylist: (id: string) => void;
 };
 
@@ -66,12 +69,13 @@ export function HomeLayout({
   onClearFilter,
   playlistVideos,
   currentPlayingVideoId,
-  onTogglePlay,
+  onPlayVideo,
+  isVideoPlayerModalOpen,
   onRemoveVideoFromPlaylist,
-  onAddVideoToPlaylist
+  onAddVideoToPlaylist,
+  onCloseVideoPlayerModal
 }: HomeLayoutProps) {
   const hasPlaylistVideos = playlistVideos.length > 0;
-
   const isFilteringThePlaylist = filterBarType === 'clear';
 
   return (
@@ -97,7 +101,7 @@ export function HomeLayout({
               position={String(index + 1)}
               key={video.id}
               video={video}
-              onPlay={onTogglePlay}
+              onPlay={onPlayVideo}
               onRemove={onRemoveVideoFromPlaylist}
             />
           ))}
@@ -112,6 +116,11 @@ export function HomeLayout({
         videos={searchedVideosResult}
         onAdd={onAddVideoToPlaylist}
         isLoading={isSearchVideosLoading}
+      />
+      <VideoPlayerModal
+        isOpen={isVideoPlayerModalOpen}
+        videoId={currentPlayingVideoId}
+        onClose={onCloseVideoPlayerModal}
       />
     </Container>
   );

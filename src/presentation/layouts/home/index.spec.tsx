@@ -17,11 +17,12 @@ describe('Presentation: Layouts/Home', () => {
     onRemoveVideoFromPlaylist: () => {},
     onSearch: () => {},
     onSearchBarInputChange: () => {},
-    onTogglePlay: () => {},
+    onPlayVideo: () => {},
     currentPlayingVideoId: '',
     playlistVideos: [],
     searchedVideosResult: [],
-    searchVideosModalErrorMessage: ''
+    searchVideosModalErrorMessage: '',
+    onCloseVideoPlayerModal: () => {}
   };
 
   it('should render the empty state with the empty playlist text when playlistVideos is empty or not defined and filterBarType is "filter"', () => {
