@@ -32,18 +32,12 @@ describe('Presentation: Components/Toast', () => {
     expect(warningState).toBeInTheDocument();
   });
 
-  it('should not render the close button if closeToastCallback is not defined', () => {
-    render(<Toast {...defaultProps} />);
-    const closeButton = screen.queryByRole('button', { name: /fechar/i });
-    expect(closeButton).not.toBeInTheDocument();
-  });
-
-  it('should call the closeToast callback on close button press', async () => {
+  it('should call the closeToast callback when the toast is pressed', async () => {
     const user = userEvent.setup();
     const handler = jest.fn();
     render(<Toast {...defaultProps} closeToast={handler} />);
-    const closeButton = screen.getByRole('button', { name: /fechar/i });
-    await user.click(closeButton);
+    const toast = screen.getByRole('dialog');
+    await user.click(toast);
     expect(handler).toHaveBeenCalledTimes(1);
   });
 });

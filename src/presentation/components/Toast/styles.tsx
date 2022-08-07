@@ -21,62 +21,24 @@ const baseToastContainerStyles = css`
   border-radius: 8px;
   padding: 12px;
   pointer-events: all;
-`;
-
-export const CloseButton = styled.button`
-  margin-left: 12px;
-  display: none;
-
-  svg {
-    fill: ${({ theme }) => theme.colors.gray800};
-    width: 32px;
-    height: 32px;
-    transition: all ease 0.5s;
-
-    :hover {
-      fill: ${({ theme }) => theme.colors.gray700};
-    }
-  }
-
-  @media (min-width: 768px) {
-    display: flex;
-    align-items: center;
-  }
+  cursor: pointer;
 `;
 
 export const ToastContent = styled.div`
   display: flex;
   align-items: center;
-  flex-direction: column;
+  flex-direction: row;
   font-size: 20px;
 
   div {
     display: flex;
-    width: 100%;
     justify-content: space-between;
-    margin-bottom: 12px;
-
-    @media (min-width: 768px) {
-      margin: 0;
-      width: unset;
-    }
-  }
-
-  button {
-    display: flex;
   }
 
   span {
     display: flex;
     font-size: 32px;
     margin-right: 12px;
-  }
-
-  @media (min-width: 768px) {
-    flex-direction: row;
-    button {
-      display: none;
-    }
   }
 `;
 

@@ -2,11 +2,8 @@ import {
   ToastSuccessContainer,
   ToastErrorContainer,
   ToastContent,
-  ToastWarningContainer,
-  CloseButton
+  ToastWarningContainer
 } from './styles';
-
-import CloseIconSvg from '@/presentation/assets/delete-icon.svg';
 
 export type ToastType = 'success' | 'error' | 'warning';
 
@@ -40,25 +37,15 @@ export function Toast({ text, type = 'success', closeToast }: ToastProps) {
   const emojiLabel = mapTypeToToastEmojiLabel[type] || mapTypeToToastEmojiLabel.error;
 
   return (
-    <ToastContainer role="dialog">
+    <ToastContainer role="dialog" onClick={() => closeToast?.()}>
       <ToastContent>
         <div>
           <span role="img" aria-label={emojiLabel}>
             {emoji}
           </span>
-          {closeToast && (
-            <CloseButton type="button" onClick={closeToast}>
-              <CloseIconSvg aria-label="fechar" />
-            </CloseButton>
-          )}
         </div>
         {text}
       </ToastContent>
-      {closeToast && (
-        <CloseButton type="button" onClick={closeToast}>
-          <CloseIconSvg aria-label="fechar" />
-        </CloseButton>
-      )}
     </ToastContainer>
   );
 }
