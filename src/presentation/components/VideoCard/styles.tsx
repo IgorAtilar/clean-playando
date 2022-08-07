@@ -28,6 +28,12 @@ export const Container = styled.div`
   }
 `;
 
+export const ThumbnailImage = styled.img`
+  width: 320px;
+  height: auto;
+  border-radius: 4px;
+`;
+
 export const DeleteButton = styled.button`
   position: absolute;
   top: 4px;

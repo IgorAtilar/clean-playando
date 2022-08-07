@@ -1,9 +1,7 @@
-import { useState } from 'react';
-import YoutubePlayer from 'react-player/youtube';
 import { Video } from '@/domain/models/video-model';
 import CloseIcon from '@/presentation/assets/delete-icon.svg';
 
-import { DeleteButton, Container } from './styles';
+import { DeleteButton, Container, ThumbnailImage } from './styles';
 
 export type VideoCardProps = {
   position: string;
@@ -14,39 +12,14 @@ export type VideoCardProps = {
 
 export function VideoCard({
   position,
-  video: { id, title, channelTitle, publishedAt },
+  video: { id, title, channelTitle, publishedAt, thumbnailUrl },
   onPlay,
   onRemove
 }: VideoCardProps) {
-  const [isPlaying, setIsPlaying] = useState(false);
-
   return (
     <Container>
-      <button
-        title="visualizar"
-        type="button"
-        onClick={() => onPlay(id)}
-        onMouseEnter={() => setIsPlaying(true)}
-        onMouseLeave={() => setIsPlaying(false)}>
-        <YoutubePlayer
-          playing
-          controls={false}
-          url={`https://www.youtube.com/watch?v=${id}&origin=http://localhost:3000`}
-          config={{
-            embedOptions: {
-              controls: 0
-            }
-          }}
-          width="100%"
-          height="180px"
-          style={{
-            pointerEvents: 'none'
-          }}
-          light={!isPlaying}
-          playIcon={<div />}
-          muted
-          loop
-        />
+      <button title="visualizar" type="button" onClick={() => onPlay(id)}>
+        <ThumbnailImage src={thumbnailUrl} alt={`thumbnail do vídeo ${title}`} />
       </button>
       <DeleteButton title="excluir da playlist" onClick={() => onRemove(id)}>
         <CloseIcon aria-label="ícone de excluir" />
