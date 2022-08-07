@@ -1,5 +1,10 @@
 import { CSSProperties } from 'react';
-import { FilterBarType, Player, SearchBarType, SearchVideosModal } from '@/presentation/components';
+import {
+  FilterBarType,
+  VideoCard,
+  SearchBarType,
+  SearchVideosModal
+} from '@/presentation/components';
 import { Video } from '@/domain/models/video-model';
 import { EmptyState } from '@/presentation/components/EmptyState';
 
@@ -88,12 +93,11 @@ export function HomeLayout({
       {hasPlaylistVideos ? (
         <PlaylistContainer>
           {playlistVideos.map((video, index) => (
-            <Player
+            <VideoCard
               position={String(index + 1)}
               key={video.id}
-              isPlaying={video.id === currentPlayingVideoId}
               video={video}
-              onTogglePlay={onTogglePlay}
+              onPlay={onTogglePlay}
               onRemove={onRemoveVideoFromPlaylist}
             />
           ))}

@@ -6,4 +6,4 @@ export * from './Modal';
 export * from './SearchVideosModal';
 export * from './SearchVideoDetails';
 export * from './FilterBar';
-export * from './Player';
+export * from './VideoCard';
