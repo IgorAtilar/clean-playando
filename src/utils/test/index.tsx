@@ -3,7 +3,7 @@ import { render, RenderOptions } from '@testing-library/react';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '@/presentation/styles';
 
-function AllTheProviders({ children }: { children: ReactNode }) {
+export function AllTheProviders({ children }: { children: ReactNode }) {
   return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
 }
 

@@ -21,7 +21,7 @@ export type ListToast = ToastProps & {
   id: string;
 };
 
-const AUTO_CLOSE_TOAST_DELAY = 5000;
+export const AUTO_CLOSE_TOAST_DELAY = 5000;
 
 export function ToastProvider({ children }: ToastProviderProps) {
   const [toastStack, setToastStack] = useState<ListToast[]>([]);
