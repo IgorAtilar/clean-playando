@@ -1,5 +1,5 @@
-/* eslint-disable react/jsx-no-constructed-context-values */
-import { createContext, PropsWithChildren, useContext, useEffect, useRef, useState } from 'react';
+import { createContext, useEffect, useRef, useState, PropsWithChildren } from 'react';
+import { Provider, useDispatch, useSelector } from 'react-redux';
 import { Video } from '@/domain/models/video-model';
 import { SaveVideoResponse } from '@/domain/usecases/save-video';
 import {
@@ -11,6 +11,15 @@ import {
   GetSearchCacheOnGlobalState,
   AddSearchCacheOnGlobalState
 } from '@/data/protocols/cache/global-state';
+import {
+  selectPlaylist,
+  setPlaylist,
+  addToPlaylist,
+  removeFromPlaylist
+} from '@/infra/redux/slices/playlist';
+import { LocalPlaylistOnStorage } from '@/data/usecases/local-playlist-on-storage/local-playlist-on-storage';
+import { PersistentStorageAdapter } from '../persistent-storage-adapter';
+import store from '@/infra/redux/store';
 
 export type SearchCacheState = Record<string, Video[]>;
 
@@ -24,17 +33,18 @@ type GlobalStateData = {
   playlistState: Video[];
 };
 
-type GlobalStateProps = PropsWithChildren & {
-  playlistOnStorage?: Video[];
-};
-
 export const GlobalStateContext = createContext<GlobalStateData>({} as GlobalStateData);
 
-export const useGlobalState = (): GlobalStateData => useContext(GlobalStateContext);
+export function GlobalStateProvider({ children }: PropsWithChildren) {
+  return <Provider store={store}>{children}</Provider>;
+}
 
-export function GlobalStateProvider({ children, playlistOnStorage = [] }: GlobalStateProps) {
+export const useGlobalState = (): GlobalStateData => {
+  const playlistOnStorage = new LocalPlaylistOnStorage(new PersistentStorageAdapter()).get();
   const playlistStateRef = useRef<Video[]>();
-  const [playlistState, setPlaylistState] = useState<Video[]>(playlistOnStorage);
+  const playlistState = useSelector(selectPlaylist);
+  const dispatch = useDispatch();
+
   const [filteredPlaylistState, setFilteredPlaylistState] = useState<Video[]>(playlistState);
   const [searchCacheState, setSearchCacheState] = useState<SearchCacheState>({});
 
@@ -44,7 +54,7 @@ export function GlobalStateProvider({ children, playlistOnStorage = [] }: Global
         errorMessage: 'Oops! Esse vídeo já está adicionado na sua playlist.'
       };
 
-    setPlaylistState((prevVideos) => [...prevVideos, video]);
+    dispatch(addToPlaylist(video));
 
     return {
       success: 'Vídeo adicionado com sucesso :D'
@@ -59,7 +69,7 @@ export function GlobalStateProvider({ children, playlistOnStorage = [] }: Global
   };
 
   const removeFromPlaylistState = (id: string) => {
-    setPlaylistState((prevVideos) => prevVideos.filter((video) => video.id !== id));
+    dispatch(removeFromPlaylist({ id }));
   };
 
   const filterPlaylistState = (pattern: string) => {
@@ -80,21 +90,20 @@ export function GlobalStateProvider({ children, playlistOnStorage = [] }: Global
     setFilteredPlaylistState(playlistState);
   }, [playlistState]);
 
-  return (
-    <GlobalStateContext.Provider
-      value={{
-        addToPlaylistState,
-        playlistState: filteredPlaylistState,
-        removeFromPlaylistState,
-        filterPlaylistState,
-        removeFilterOnPlaylistState,
-        addToSearchCacheState,
-        searchCacheState
-      }}>
-      {children}
-    </GlobalStateContext.Provider>
-  );
-}
+  useEffect(() => {
+    dispatch(setPlaylist(playlistOnStorage));
+  }, []);
+
+  return {
+    addToPlaylistState,
+    addToSearchCacheState,
+    filterPlaylistState,
+    playlistState: filteredPlaylistState,
+    removeFilterOnPlaylistState,
+    removeFromPlaylistState,
+    searchCacheState
+  };
+};
 
 export class GlobalStateAdapter
   implements
