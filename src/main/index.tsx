@@ -1,11 +1,11 @@
 import ReactDOM from 'react-dom';
 import { App } from '@/presentation/app';
 import { MakeHome } from './factories/pages/home/home-factory';
-import { GlobalStateProvider } from '@/infra/cache/global-state-adapter';
+import { StateProvider } from '@/infra/state';
 
 ReactDOM.render(
-  <GlobalStateProvider>
+  <StateProvider>
     <App makeHome={MakeHome} />
-  </GlobalStateProvider>,
+  </StateProvider>,
   document.getElementById('root')
 );

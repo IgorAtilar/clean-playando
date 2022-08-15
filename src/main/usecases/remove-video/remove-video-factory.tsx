@@ -1,13 +1,13 @@
 import { RemoveVideo } from '@/domain/usecases/remove-video';
 import { LocalRemoveVideo } from '@/data/usecases/local-remove-video/local-remove-video';
-import { GlobalStateAdapter, useGlobalState } from '@/infra/cache/global-state-adapter';
 import { LocalRemoveVideoOnStorage } from '@/data/usecases/local-remove-video-on-storage/local-remove-video-on-storage';
 import { PersistentStorageAdapter } from '@/infra/cache/persistent-storage-adapter';
+import { useRemoveFromPlaylist } from '@/infra/state/adapters';
 
 export function makeRemoveVideo(): RemoveVideo {
-  const { removeFromPlaylistState } = useGlobalState();
+  const { removeFromPlaylist } = useRemoveFromPlaylist();
   return new LocalRemoveVideo(
-    new GlobalStateAdapter({ removeFromPlaylistState }),
+    removeFromPlaylist,
     new LocalRemoveVideoOnStorage(new PersistentStorageAdapter())
   );
 }

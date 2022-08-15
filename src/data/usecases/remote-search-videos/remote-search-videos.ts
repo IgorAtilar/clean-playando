@@ -1,3 +1,4 @@
+import { AddToSearchCacheOnState, GetSearchCacheFromState } from '@/data/protocols/state';
 import { HttpGetClient } from '@/data/protocols/http/http-get-client';
 import { NotFoundError } from '@/domain/errors/not-found-error';
 import { UnexpectedError } from '@/domain/errors/unexpected-error';
@@ -7,7 +8,6 @@ import {
   SearchVideosParams,
   SearchVideosResponse
 } from '@/domain/usecases/search-videos';
-import { GlobalStateAdapter } from '@/infra/cache/global-state-adapter';
 import { getFormattedDateString } from '@/utils/date';
 
 export type GetSearchVideosResponse = {
@@ -22,13 +22,14 @@ export class RemoteSearchVideos implements SearchVideos {
   constructor(
     private readonly url: string,
     private readonly httpGetClient: HttpGetClient<RawSearchVideoParams, GetSearchVideosResponse>,
-    private readonly globalState: GlobalStateAdapter
+    private readonly getSearchCacheFromState: GetSearchCacheFromState,
+    private readonly addToSearchCacheOnState: AddToSearchCacheOnState
   ) {}
 
   async search(params: SearchVideosParams): Promise<SearchVideosResponse> {
     const search = params.query;
 
-    const searchCachedVideos = this.globalState.getSearchCacheOnGlobalState(search);
+    const searchCachedVideos = this.getSearchCacheFromState(search) || [];
 
     if (searchCachedVideos.length) return { videos: searchCachedVideos };
 
@@ -62,7 +63,7 @@ export class RemoteSearchVideos implements SearchVideos {
       publishedAt: getFormattedDateString(item.snippet.publishedAt)
     }));
 
-    this.globalState.addToSearchCache(search, videos);
+    this.addToSearchCacheOnState(search, videos);
 
     return { videos };
   }

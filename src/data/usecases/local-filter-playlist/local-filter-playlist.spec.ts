@@ -1,17 +1,12 @@
 import { faker } from '@faker-js/faker';
-import { GlobalStateAdapter } from '@/infra/cache/global-state-adapter';
 import { LocalFilterPlaylist } from './local-filter-playlist';
 
-jest.mock('@/infra/cache/global-state-adapter');
-
 describe('Data: LocalFilterPlaylist', () => {
-  afterEach(() => jest.clearAllMocks());
-
-  it('should call GlobalStateAdapter filterPlaylist method with the correct pattern', () => {
+  it('should call filterPlaylistOnGlobalState callback with the correct pattern', () => {
     const pattern = faker.lorem.word();
-    const globalState = new GlobalStateAdapter();
-    const localFilterPlaylist = new LocalFilterPlaylist(globalState);
+    const filterPlaylistOnGlobalState = jest.fn();
+    const localFilterPlaylist = new LocalFilterPlaylist(filterPlaylistOnGlobalState);
     localFilterPlaylist.filter(pattern);
-    expect(globalState.filterPlaylist).toHaveBeenCalledWith(pattern);
+    expect(filterPlaylistOnGlobalState).toHaveBeenCalledWith(pattern);
   });
 });

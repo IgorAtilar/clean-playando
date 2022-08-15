@@ -1,8 +1,9 @@
 import { Playlist } from '@/domain/usecases/playlist';
 import { LocalPlaylist } from '@/data/usecases/local-playlist/local-playlist';
-import { GlobalStateAdapter, useGlobalState } from '@/infra/cache/global-state-adapter';
+import { useGetPlaylist } from '@/infra/state/adapters';
 
 export function makePlaylist(): Playlist {
-  const { playlistState } = useGlobalState();
-  return new LocalPlaylist(new GlobalStateAdapter({ playlistState }));
+  const { getPlaylist } = useGetPlaylist();
+
+  return new LocalPlaylist(getPlaylist);
 }

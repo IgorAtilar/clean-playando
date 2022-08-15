@@ -1,10 +1,10 @@
+import { RemoveFilterOnPlaylistState } from '@/data/protocols/state';
 import { RemoveFilterOnPlaylist } from '@/domain/usecases/remove-filter-of-playlist';
-import { GlobalStateAdapter } from '@/infra/cache/global-state-adapter';
 
 export class LocalRemoveFilterOnPlaylist implements RemoveFilterOnPlaylist {
-  constructor(private readonly globalState: GlobalStateAdapter) {}
+  constructor(private readonly removeFilterOnPlaylistState: RemoveFilterOnPlaylistState) {}
 
   remove(): void {
-    this.globalState.removeFilterOnPlaylist();
+    this.removeFilterOnPlaylistState();
   }
 }

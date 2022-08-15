@@ -6,14 +6,19 @@ import {
   RawSearchVideoParams
 } from './remote-search-videos';
 import { mockGetResponse, mockResponse } from '@/data/test/mock-remote-search-videos';
-import { GlobalStateMock } from '@/data/test/mock-global-state';
 
 describe('Data: RemoteSearchVideo', () => {
   it('should call HttpGetClient with correct url', async () => {
     const url = 'any_url';
-    const globalStateMock = new GlobalStateMock();
+    const addToSearchCacheGlobalStateMock = jest.fn();
+    const getSearchCacheFromGlobalStateMock = jest.fn();
     const httpGetClientSpy = new HttpGetClientSpy<RawSearchVideoParams, GetSearchVideosResponse>();
-    const remoteSearchVideo = new RemoteSearchVideos(url, httpGetClientSpy, globalStateMock);
+    const remoteSearchVideo = new RemoteSearchVideos(
+      url,
+      httpGetClientSpy,
+      addToSearchCacheGlobalStateMock,
+      getSearchCacheFromGlobalStateMock
+    );
     await remoteSearchVideo.search({ query: 'any_search' });
     expect(httpGetClientSpy.url).toBe(url);
   });
@@ -24,9 +29,15 @@ describe('Data: RemoteSearchVideo', () => {
       query: 'any_query',
       maxResults: 5
     };
-    const globalStateMock = new GlobalStateMock();
+    const addToSearchCacheGlobalStateMock = jest.fn();
+    const getSearchCacheFromGlobalStateMock = jest.fn();
     const httpGetClientSpy = new HttpGetClientSpy<RawSearchVideoParams, GetSearchVideosResponse>();
-    const remoteSearchVideo = new RemoteSearchVideos(url, httpGetClientSpy, globalStateMock);
+    const remoteSearchVideo = new RemoteSearchVideos(
+      url,
+      httpGetClientSpy,
+      addToSearchCacheGlobalStateMock,
+      getSearchCacheFromGlobalStateMock
+    );
     await remoteSearchVideo.search(params);
 
     expect(httpGetClientSpy.params).toStrictEqual({
@@ -37,12 +48,18 @@ describe('Data: RemoteSearchVideo', () => {
 
   it('should return UnexpectedError message as errorMessage if HttpGetClient returns status code different of 200', async () => {
     const url = 'any_url';
-    const globalStateMock = new GlobalStateMock();
+    const addToSearchCacheGlobalStateMock = jest.fn();
+    const getSearchCacheFromGlobalStateMock = jest.fn();
     const httpGetClientSpy = new HttpGetClientSpy<RawSearchVideoParams, GetSearchVideosResponse>();
     httpGetClientSpy.response = {
       statusCode: 400
     };
-    const remoteSearchVideo = new RemoteSearchVideos(url, httpGetClientSpy, globalStateMock);
+    const remoteSearchVideo = new RemoteSearchVideos(
+      url,
+      httpGetClientSpy,
+      addToSearchCacheGlobalStateMock,
+      getSearchCacheFromGlobalStateMock
+    );
     const { videos, errorMessage } = await remoteSearchVideo.search({
       query: 'any_search'
     });
@@ -54,14 +71,20 @@ describe('Data: RemoteSearchVideo', () => {
   it('should return Videos if HttpGetClient return status code 200', async () => {
     const url = 'any_url';
     const httpGetClientSpy = new HttpGetClientSpy<RawSearchVideoParams, GetSearchVideosResponse>();
-    const globalStateMock = new GlobalStateMock();
+    const addToSearchCacheGlobalStateMock = jest.fn();
+    const getSearchCacheFromGlobalStateMock = jest.fn();
     const getResponse = mockGetResponse();
 
     httpGetClientSpy.response = {
       statusCode: 200,
       data: getResponse
     };
-    const remoteSearchVideo = new RemoteSearchVideos(url, httpGetClientSpy, globalStateMock);
+    const remoteSearchVideo = new RemoteSearchVideos(
+      url,
+      httpGetClientSpy,
+      addToSearchCacheGlobalStateMock,
+      getSearchCacheFromGlobalStateMock
+    );
 
     const response = await remoteSearchVideo.search({ query: 'any_search' });
 
