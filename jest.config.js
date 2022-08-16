@@ -7,9 +7,12 @@ module.exports = {
     '!<rootDir>/src/main/**/*',
     '!<rootDir>/src/presentation/styles/**/*',
     '!<rootDir>/src/presentation/app/**/*',
-    '!<rootDir>/src/utils/test/*',
+    '!<rootDir>/src/utils/**/*',
     '!<rootDir>/src/**/test/**/*',
-    '!<rootDir>/src/**/styles.{ts,tsx}'
+    '!<rootDir>/src/**/styles.{ts,tsx}',
+    '!<rootDir>/src/infra/state/index.tsx',
+    '!<rootDir>/src/infra/state/adapters/index.ts',
+    '!<rootDir>/src/infra/state/redux/store/index.ts'
   ],
   coverageDirectory: 'coverage',
   testEnvironment: 'jsdom',
