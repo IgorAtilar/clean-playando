@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const ControlsContainer = styled.div`
-  display: none;
+  display: flex;
 
   position: absolute;
   width: 100%;
@@ -9,16 +9,61 @@ export const ControlsContainer = styled.div`
   align-items: center;
   gap: 0 8px;
   padding: 12px;
+
+  @media (min-width: 992px) {
+    display: none;
+  }
+`;
+
+export const CloseButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+
+  svg {
+    width: 24px;
+    fill: ${({ theme }) => theme.colors.gray100};
+    transition: all ease 0.5s;
+  }
+
+  :hover {
+    svg {
+      fill: ${({ theme }) => theme.colors.primary};
+    }
+  }
+
+  @media (min-width: 992px) {
+    display: none;
+  }
 `;
 
 export const PlayerContainer = styled.div`
   position: relative;
-  height: 80%;
-  width: 90%;
+  width: 100%;
+  height: 100%;
 
-  :hover {
-    ${ControlsContainer} {
-      display: flex;
+  @media (orientation: portrait) {
+    position: fixed;
+    width: 100vh;
+    height: 100vw;
+    transform: rotate(90deg);
+  }
+
+  @media (min-width: 768px) {
+    height: 80%;
+    width: 90%;
+
+    :hover {
+      ${ControlsContainer} {
+        display: flex;
+      }
+
+      ${CloseButton} {
+        display: flex;
+      }
     }
   }
 `;
@@ -31,20 +76,13 @@ export const IconButton = styled.button`
   svg {
     width: 20px;
     fill: ${({ theme }) => theme.colors.gray100};
+    transition: all ease 0.5s;
   }
-`;
 
-export const CloseButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  top: 12px;
-  right: 12px;
-
-  svg {
-    width: 24px;
-    fill: ${({ theme }) => theme.colors.gray100};
+  :hover {
+    svg {
+      fill: ${({ theme }) => theme.colors.primary};
+    }
   }
 `;
 
