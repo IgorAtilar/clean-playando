@@ -1,11 +1,12 @@
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
 import { App } from '@/presentation/app';
 import { MakeHome } from './factories/pages/home/home-factory';
-import { StateProvider } from '@/infra/state';
+import store from '@/infra/state/redux/store';
 
 ReactDOM.render(
-  <StateProvider>
+  <Provider store={store}>
     <App makeHome={MakeHome} />
-  </StateProvider>,
+  </Provider>,
   document.getElementById('root')
 );
