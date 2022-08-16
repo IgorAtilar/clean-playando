@@ -31,7 +31,7 @@ export const mapTypeToToastEmojiLabel: Record<ToastType, string> = {
   warning: 'carinha curiosa'
 };
 
-export function Toast({ text, type = 'success', closeToast }: ToastProps) {
+export function Toast({ text, type, closeToast }: ToastProps) {
   const ToastContainer = mapTypeToToastContainer[type] || mapTypeToToastContainer.error;
   const emoji = mapTypeToToastEmoji[type] || mapTypeToToastEmoji.error;
   const emojiLabel = mapTypeToToastEmojiLabel[type] || mapTypeToToastEmojiLabel.error;

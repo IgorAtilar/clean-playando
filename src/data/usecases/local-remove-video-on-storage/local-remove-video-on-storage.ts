@@ -8,7 +8,8 @@ export class LocalRemoveVideoOnStorage implements RemoveVideoOnStorage {
 
   remove(id: string): void {
     const playlist = this.persistentStorage.get(PLAYLIST_PERSISTENT_STORAGE_KEY);
-    if (!playlist.find((value) => value.id === id)) return;
+    const hasVideoAdded = !playlist.find((value) => value.id === id);
+    if (hasVideoAdded) return;
     const newPlaylist = playlist.filter((video) => video.id !== id);
     this.persistentStorage.set(PLAYLIST_PERSISTENT_STORAGE_KEY, newPlaylist);
   }

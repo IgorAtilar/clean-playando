@@ -11,10 +11,11 @@ import { RemoveFilterOnPlaylist } from '@/domain/usecases/remove-filter-of-playl
 import { SearchVideoByUrl } from '@/domain/usecases/search-video-by-url';
 import { HomeProps, Home } from '.';
 import { mockVideo, mockVideos } from '@/presentation/test/mock-video';
-import { useToast } from '@/presentation/contexts/ToastContext';
+
+const showToast = jest.fn();
 
 jest.mock('@/presentation/contexts/ToastContext', () => ({
-  useToast: () => ({ showToast: jest.fn() })
+  useToast: () => ({ showToast })
 }));
 
 const filterPlaylist: FilterPlaylist = {
@@ -48,6 +49,10 @@ const searchVideos: SearchVideos = {
 const youtubeUrl = 'https://www.youtube.com/watch?v=tw7HYXK2104&t=1555s';
 
 describe('Presentation: Pages/Home', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   const defaultProps: HomeProps = {
     filterPlaylist,
     playlist,
@@ -117,6 +122,31 @@ describe('Presentation: Pages/Home', () => {
     expect(mockedSearchVideoByUrl.search).toHaveBeenCalledWith(youtubeUrl);
   });
 
+  it('should show an error toast when the search method from searchVideoByUrl prop not return a video or returns an error message', async () => {
+    const user = userEvent.setup();
+    const errorMessage = faker.datatype.string();
+    const mockedSearchVideoByUrl: SearchVideoByUrl = {
+      search: jest.fn().mockImplementationOnce(() => ({
+        video: [],
+        errorMessage
+      }))
+    };
+
+    render(<Home {...defaultProps} searchVideoByUrl={mockedSearchVideoByUrl} />);
+
+    await act(async () => {
+      const input = screen.getByPlaceholderText(/insira o link ou título do vídeo/i);
+      await user.type(input, youtubeUrl);
+      const button = screen.getByRole('button', { name: /adicionar/i });
+      await user.click(button);
+    });
+
+    expect(showToast).toHaveBeenCalledWith({
+      type: 'error',
+      text: errorMessage
+    });
+  });
+
   it('should call the search method from searchVideos prop with the correct values when searching for videos by title', async () => {
     const user = userEvent.setup();
     const mockedSearchVideos: SearchVideos = {
@@ -172,6 +202,88 @@ describe('Presentation: Pages/Home', () => {
     });
 
     expect(mockedSaveVideo.save).toHaveBeenCalledWith(mockedVideos[0]);
+  });
+
+  it('should show a success toast when save method from saveVideo prop return success message', async () => {
+    const user = userEvent.setup();
+    const mockedVideos = mockVideos();
+    const mockedSearchVideos: SearchVideos = {
+      search: jest.fn().mockImplementationOnce(() => ({
+        videos: mockedVideos
+      }))
+    };
+
+    const successMessage = faker.datatype.string();
+
+    const mockedSaveVideo: SaveVideo = {
+      save: jest.fn().mockImplementationOnce(() => ({
+        success: successMessage
+      }))
+    };
+
+    render(
+      <Home {...defaultProps} searchVideos={mockedSearchVideos} saveVideo={mockedSaveVideo} />
+    );
+    const text = faker.word.verb();
+
+    await act(async () => {
+      const input = screen.getByPlaceholderText(/insira o link ou título do vídeo/i);
+      await user.type(input, text);
+      const button = screen.getByRole('button', { name: /buscar/i });
+      await user.click(button);
+    });
+
+    const addButton = screen.getAllByRole('button', { name: /adicionar/i })[0];
+
+    await act(async () => {
+      await user.click(addButton);
+    });
+
+    expect(showToast).toHaveBeenCalledWith({
+      type: 'success',
+      text: successMessage
+    });
+  });
+
+  it('should show a warning toast when save method from saveVideo prop return error message', async () => {
+    const user = userEvent.setup();
+    const mockedVideos = mockVideos();
+    const mockedSearchVideos: SearchVideos = {
+      search: jest.fn().mockImplementationOnce(() => ({
+        videos: mockedVideos
+      }))
+    };
+
+    const errorMessage = faker.datatype.string();
+
+    const mockedSaveVideo: SaveVideo = {
+      save: jest.fn().mockImplementationOnce(() => ({
+        errorMessage
+      }))
+    };
+
+    render(
+      <Home {...defaultProps} searchVideos={mockedSearchVideos} saveVideo={mockedSaveVideo} />
+    );
+    const text = faker.word.verb();
+
+    await act(async () => {
+      const input = screen.getByPlaceholderText(/insira o link ou título do vídeo/i);
+      await user.type(input, text);
+      const button = screen.getByRole('button', { name: /buscar/i });
+      await user.click(button);
+    });
+
+    const addButton = screen.getAllByRole('button', { name: /adicionar/i })[0];
+
+    await act(async () => {
+      await user.click(addButton);
+    });
+
+    expect(showToast).toHaveBeenCalledWith({
+      type: 'warning',
+      text: errorMessage
+    });
   });
 
   it('should call the save method from saveVideo prop with the correct value when typing a youtube url and click on "Adicionar"', async () => {
@@ -234,11 +346,13 @@ describe('Presentation: Pages/Home', () => {
     const input = screen.getByPlaceholderText(/palavras-chave/i);
     const text = faker.word.verb();
 
-    await user.type(input, text);
+    await act(async () => {
+      await user.type(input, text);
 
-    const filterButton = screen.getByRole('button', { name: /filtrar/i });
+      const filterButton = screen.getByRole('button', { name: /filtrar/i });
 
-    await user.click(filterButton);
+      await user.click(filterButton);
+    });
 
     expect(mockedFilterPlaylist.filter).toHaveBeenCalledWith(text);
   });
@@ -254,16 +368,16 @@ describe('Presentation: Pages/Home', () => {
     const input = screen.getByPlaceholderText(/palavras-chave/i);
     const text = faker.word.verb();
 
-    await user.type(input, text);
+    await act(async () => {
+      await user.type(input, text);
+      const filterButton = screen.getByRole('button', { name: /filtrar/i });
+      await user.click(filterButton);
+    });
 
-    const filterButton = screen.getByRole('button', { name: /filtrar/i });
-
-    await user.click(filterButton);
-
-    const clearButton = screen.getByRole('button', { name: /limpar filtro/i });
-
-    await user.click(clearButton);
-
+    await act(async () => {
+      const clearButton = screen.getByRole('button', { name: /limpar filtro/i });
+      await user.click(clearButton);
+    });
     expect(mockedRemoveFilterOnPlaylist.remove).toHaveBeenCalledTimes(1);
   });
 });

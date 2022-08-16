@@ -33,4 +33,12 @@ describe('Data: LocalRemoveVideoOnStorage', () => {
 
     expect(updatedVideosOnStorage).toStrictEqual(filteredVideos);
   });
+
+  it('should do nothing if the id passed is not from any video', () => {
+    const { sut, videos, persistentStorage } = makeSut();
+    const videoIdToRemove = `${videos[videos.length - 1].id}-test`;
+    sut.remove(videoIdToRemove);
+    const updatedVideosOnStorage = persistentStorage.get(PLAYLIST_PERSISTENT_STORAGE_KEY);
+    expect(updatedVideosOnStorage).toStrictEqual(videos);
+  });
 });

@@ -42,7 +42,11 @@ describe('Presentation: Contexts/ToastContext', () => {
     });
     const toast = screen.getByText(text);
     expect(toast).toBeInTheDocument();
-    await user.click(toast);
+
+    await act(async () => {
+      await user.click(toast);
+    });
+
     expect(toast).not.toBeInTheDocument();
   });
 
@@ -64,7 +68,11 @@ describe('Presentation: Contexts/ToastContext', () => {
     });
     const toast = screen.getByText(text);
     expect(toast).toBeInTheDocument();
-    jest.advanceTimersByTime(AUTO_CLOSE_TOAST_DELAY);
+
+    act(() => {
+      jest.advanceTimersByTime(AUTO_CLOSE_TOAST_DELAY);
+    });
+
     rerender();
     expect(toast).not.toBeInTheDocument();
   });

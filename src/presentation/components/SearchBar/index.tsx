@@ -21,7 +21,7 @@ export const mapSearchBarTypeToButtonText: Record<SearchBarType, string> = {
 export function SearchBar({
   onSubmit,
   onInputChange,
-  placeholder = '',
+  placeholder,
   type,
   className
 }: SearchBarProps) {

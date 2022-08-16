@@ -32,6 +32,12 @@ describe('Presentation: Components/Toast', () => {
     expect(warningState).toBeInTheDocument();
   });
 
+  it('should render the error state when type prop is not defined', () => {
+    render(<Toast {...defaultProps} />);
+    const errorState = screen.getByText('😥');
+    expect(errorState).toBeInTheDocument();
+  });
+
   it('should call the closeToast callback when the toast is pressed', async () => {
     const user = userEvent.setup();
     const handler = jest.fn();
@@ -39,5 +45,12 @@ describe('Presentation: Components/Toast', () => {
     const toast = screen.getByRole('dialog');
     await user.click(toast);
     expect(handler).toHaveBeenCalledTimes(1);
+  });
+
+  it('should not throw error when the toast is pressed and closeToast is not defined', async () => {
+    const user = userEvent.setup();
+    render(<Toast {...defaultProps} />);
+    const toast = screen.getByRole('dialog');
+    await user.click(toast);
   });
 });

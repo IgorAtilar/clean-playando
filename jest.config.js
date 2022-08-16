@@ -12,7 +12,8 @@ module.exports = {
     '!<rootDir>/src/**/styles.{ts,tsx}',
     '!<rootDir>/src/infra/state/index.tsx',
     '!<rootDir>/src/infra/state/adapters/index.ts',
-    '!<rootDir>/src/infra/state/redux/store/index.ts'
+    '!<rootDir>/src/infra/state/redux/store/index.ts',
+    '!<rootDir>/src/infra/axios-http-client/index.ts'
   ],
   coverageDirectory: 'coverage',
   testEnvironment: 'jsdom',
