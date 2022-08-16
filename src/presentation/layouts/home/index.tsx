@@ -78,8 +78,10 @@ export function HomeLayout({
   const hasPlaylistVideos = playlistVideos.length > 0;
   const isFilteringThePlaylist = filterBarType === 'clear';
 
+  const isModalOpen = isSearchVideosModalOpen || isVideoPlayerModalOpen;
+
   return (
-    <Container style={getMainContainerStyle(isSearchVideosModalOpen)}>
+    <Container style={getMainContainerStyle(isModalOpen)}>
       <Logo />
       <SearchBar
         placeholder="Insira o link ou título do vídeo"
