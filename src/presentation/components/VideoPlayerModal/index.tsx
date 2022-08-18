@@ -90,16 +90,16 @@ export function VideoPlayerModal({ isOpen, videoId, onClose }: VideoPlayerProps)
           height="100%"
           onProgress={handleProgress}
         />
-        <CloseButton title="Fechar" onClick={onClose}>
+        <CloseButton title="fechar" onClick={onClose}>
           <CloseIcon />
         </CloseButton>
         <ControlsContainer>
           {isPlaying ? (
-            <IconButton title="Pausar" onClick={() => setIsPlaying(false)}>
+            <IconButton title="pausar" onClick={() => setIsPlaying(false)}>
               <PauseIcon />
             </IconButton>
           ) : (
-            <IconButton title="Reproduzir" onClick={() => setIsPlaying(true)}>
+            <IconButton title="reproduzir" onClick={() => setIsPlaying(true)}>
               <PlayIcon />
             </IconButton>
           )}
@@ -112,7 +112,7 @@ export function VideoPlayerModal({ isOpen, videoId, onClose }: VideoPlayerProps)
             onChange={handleSeekChange}
             onMouseDown={() => setIsSeeking(true)}
             onMouseUp={() => setIsSeeking(false)}
-            title="Duração"
+            title="duração"
           />
           <VolumeBar
             type="range"
@@ -121,7 +121,7 @@ export function VideoPlayerModal({ isOpen, videoId, onClose }: VideoPlayerProps)
             step="any"
             value={volume}
             onChange={handleVolumeChange}
-            title="Volume"
+            title="volume"
           />
         </ControlsContainer>
       </PlayerContainer>
