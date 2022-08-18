@@ -204,6 +204,38 @@ describe('Presentation: Pages/Home', () => {
     expect(mockedSaveVideo.save).toHaveBeenCalledWith(mockedVideos[0]);
   });
 
+  it('should close the search videos result modal when clicking to close', async () => {
+    const user = userEvent.setup();
+    const mockedVideos = mockVideos();
+    const mockedSearchVideos: SearchVideos = {
+      search: jest.fn().mockImplementationOnce(() => ({
+        videos: mockedVideos
+      }))
+    };
+
+    render(<Home {...defaultProps} searchVideos={mockedSearchVideos} />);
+    const text = faker.word.verb();
+
+    await act(async () => {
+      const input = screen.getByPlaceholderText(/insira o link ou título do vídeo/i);
+      await user.type(input, text);
+      const button = screen.getByRole('button', { name: /buscar/i });
+      await user.click(button);
+    });
+
+    const searchVideosModalTitle = screen.getByText(/resultados/i);
+
+    expect(searchVideosModalTitle).toBeInTheDocument();
+
+    const closeButton = screen.getByRole('button', { name: /fechar/i });
+
+    await act(async () => {
+      await user.click(closeButton);
+    });
+
+    expect(searchVideosModalTitle).not.toBeInTheDocument();
+  });
+
   it('should show a success toast when save method from saveVideo prop return success message', async () => {
     const user = userEvent.setup();
     const mockedVideos = mockVideos();
@@ -379,5 +411,53 @@ describe('Presentation: Pages/Home', () => {
       await user.click(clearButton);
     });
     expect(mockedRemoveFilterOnPlaylist.remove).toHaveBeenCalledTimes(1);
+  });
+
+  it('should open the video player modal when clicking on a video', async () => {
+    const user = userEvent.setup();
+    const mockedVideos = mockVideos();
+    const mockedPlaylist: Playlist = {
+      get: jest.fn().mockImplementationOnce(() => mockedVideos)
+    };
+
+    render(<Home {...defaultProps} playlist={mockedPlaylist} />);
+
+    const playButton = screen.getAllByTitle('visualizar')[0];
+
+    await act(async () => {
+      await user.click(playButton);
+    });
+
+    const modal = screen.getByRole('dialog');
+
+    expect(modal).toBeInTheDocument();
+  });
+
+  it('should close the video player modal when clicking on close', async () => {
+    const user = userEvent.setup();
+    const mockedVideos = mockVideos();
+    const mockedPlaylist: Playlist = {
+      get: jest.fn().mockImplementationOnce(() => mockedVideos)
+    };
+
+    render(<Home {...defaultProps} playlist={mockedPlaylist} />);
+
+    const playButton = screen.getAllByTitle('visualizar')[0];
+
+    await act(async () => {
+      await user.click(playButton);
+    });
+
+    const modal = screen.getByRole('dialog');
+
+    expect(modal).toBeInTheDocument();
+
+    const closeButton = screen.getByRole('button', { name: /fechar/i });
+
+    await act(async () => {
+      await user.click(closeButton);
+    });
+
+    expect(modal).not.toBeInTheDocument();
   });
 });

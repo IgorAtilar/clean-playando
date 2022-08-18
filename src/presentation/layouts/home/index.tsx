@@ -75,7 +75,7 @@ export function HomeLayout({
   onAddVideoToPlaylist,
   onCloseVideoPlayerModal
 }: HomeLayoutProps) {
-  const hasPlaylistVideos = playlistVideos.length > 0;
+  const hasPlaylistVideos = playlistVideos?.length > 0;
   const isFilteringThePlaylist = filterBarType === 'clear';
 
   const isModalOpen = isSearchVideosModalOpen || isVideoPlayerModalOpen;
