@@ -1,16 +1,19 @@
-name: coverage workflow
 
+name: coverage report workflow
 on: [push, pull_request]
-
 jobs:
-  build:
+  run:
     runs-on: ubuntu-latest
-    name: Test project
     steps:
-    - uses: actions/checkout@master
-    - uses: codecov/codecov-action@v3
-      with:
-        flags: unittests # optional
-        name: codecov-umbrella # optional
-        fail_ci_if_error: true # optional (default = false)
-        verbose: true # optional (default = false)
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Node 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: yarn install
+      - name: Run tests and collect coverage
+        run: yarn test:ci
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
