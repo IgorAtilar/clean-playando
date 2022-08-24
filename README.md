@@ -26,6 +26,7 @@ https://user-images.githubusercontent.com/73081443/186293465-3a93d14e-fee2-41f8-
 - React;
 - Styled Components;
 - Redux;
+- React Testing Library;
 - Jest.
 
 # Instalação
