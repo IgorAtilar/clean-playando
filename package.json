@@ -12,15 +12,17 @@
     "test:watch": "yarn test --watch",
     "test:staged": "yarn test --onlyChanged",
     "test:ci": "yarn test --coverage",
-    "build": "webpack",
     "postinstall": "husky install",
-    "dev": "webpack-dev-server --open"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
   },
   "dependencies": {
     "@faker-js/faker": "^7.3.0",
     "@reduxjs/toolkit": "^1.8.4",
     "axios": "^0.27.2",
     "dotenv-webpack": "^8.0.0",
+    "next": "^12.3.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-player": "^2.10.1",
@@ -39,7 +41,6 @@
     "@types/styled-components": "^5.1.25",
     "@typescript-eslint/eslint-plugin": "^5.30.5",
     "@typescript-eslint/parser": "^5.30.5",
-    "clean-webpack-plugin": "^4.0.0",
     "eslint": "^7.32.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^8.5.0",
@@ -56,9 +57,6 @@
     "prettier": "2.7.1",
     "ts-jest": "^28.0.5",
     "ts-loader": "^9.3.1",
-    "typescript": "^4.7.4",
-    "webpack": "^5.73.0",
-    "webpack-cli": "^4.10.0",
-    "webpack-dev-server": "^4.9.3"
+    "typescript": "^4.7.4"
   }
 }
