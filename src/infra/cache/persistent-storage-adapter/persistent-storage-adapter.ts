@@ -7,11 +7,17 @@ export class PersistentStorageAdapter<T>
   implements GetFromPersistentStorage<T>, SetPersistentStorage<T>
 {
   set(key: string, value: T[]): void {
-    localStorage.setItem(key, JSON.stringify(value));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(key, JSON.stringify(value));
+    }
   }
 
   get(key: string): T[] {
-    const response = JSON.parse(localStorage.getItem(key)) || [];
-    return response;
+    if (typeof window !== 'undefined') {
+      const response = JSON.parse(localStorage.getItem(key)) || [];
+      return response;
+    }
+
+    return [];
   }
 }

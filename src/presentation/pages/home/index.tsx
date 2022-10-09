@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { SearchVideos } from '@/domain/usecases/search-videos';
 import { Video } from '@/domain/models/video-model';
 import { SaveVideo } from '@/domain/usecases/save-video';
@@ -30,6 +31,7 @@ export function Home({
   filterPlaylist,
   removeFilterOnPlaylist
 }: HomeProps) {
+  const [playlistVideos, setPlaylistVideos] = useState<Video[]>([]);
   const { state, dispatch } = useHomeReducer();
   const { showToast } = useToast();
 
@@ -43,8 +45,6 @@ export function Home({
     searchedVideosResult,
     isPlayerVideoModalOpen
   } = state;
-
-  const playlistVideos = playlist.get();
 
   const handleSearch = async (value?: string) => {
     if (!value) return;
@@ -163,6 +163,11 @@ export function Home({
       payload: 'filter'
     });
   };
+
+  useEffect(() => {
+    const localPlaylistVideos = playlist.get();
+    setPlaylistVideos(localPlaylistVideos);
+  });
 
   return (
     <HomeLayout
