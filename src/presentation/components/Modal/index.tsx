@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom';
-import { PropsWithChildren, useEffect } from 'react';
+import { PropsWithChildren, useEffect, useState } from 'react';
 import { ModalOverlay } from './styles';
 
 let modalRoot = typeof window !== 'undefined' ? document.getElementById('modal-root') : undefined;
@@ -9,6 +9,12 @@ export type ModalProps = PropsWithChildren<{
 }>;
 
 export function Modal({ children, isOpen }: ModalProps) {
+  const [domReady, setDomReady] = useState(false);
+
+  useEffect(() => {
+    setDomReady(true);
+  });
+
   useEffect(() => {
     if (!modalRoot) {
       modalRoot = document.createElement('div');
@@ -19,5 +25,7 @@ export function Modal({ children, isOpen }: ModalProps) {
 
   if (!isOpen) return null;
 
-  return ReactDOM.createPortal(<ModalOverlay role="dialog">{children}</ModalOverlay>, modalRoot);
+  return domReady
+    ? ReactDOM.createPortal(<ModalOverlay role="dialog">{children}</ModalOverlay>, modalRoot)
+    : null;
 }
